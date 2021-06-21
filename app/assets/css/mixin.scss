@@ -1,0 +1,59 @@
+@import "color";
+
+@mixin multi-line($line: 2) {
+  -webkit-line-clamp: $line;
+  text-overflow: ellipsis;
+  word-break: break-all;
+  overflow: hidden;
+  display: -webkit-box;
+  white-space: normal !important;
+  width: 100%;
+  /* autoprefixer: ignore next */
+  -webkit-box-orient: vertical;
+}
+
+@mixin clearfix($height:0) {
+  height: $height;
+  clear: both;
+  content: " ";
+  display: block;
+  overflow: hidden
+}
+
+@mixin border-arrow($color:$tcblue,$top:20px,$size:7px) {
+  position: relative;
+  padding-right: calc(#{$size} * 1.6);
+
+  &:after {
+    content: "";
+    border-right: 1px solid $color;
+    border-bottom: 1px solid $color;
+    transform: rotate(-45deg);
+    position: absolute;
+    top: $top;
+    width: $size;
+    height: $size;
+  }
+
+}
+
+@mixin border-btm($color:$line-grey,$withLastChild:true) {
+  position: relative;
+  &:after {
+    position: absolute;
+    content: '';
+    width: 200%;
+    left: -50%;
+    top: 100%;
+    border-bottom: 1px solid $color;
+    transform: scale(.5);
+  }
+
+  @if $withLastChild {
+    &:last-child {
+      &:after {
+        display: none;
+      }
+    }
+  }
+}
