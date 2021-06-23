@@ -1,0 +1,94 @@
+@import "../color";
+@import "../variables";
+@import "../mixin";
+
+.signin-page {
+    width: 100vw;
+    height: 100vh;
+    background: #fff;
+    padding: 0 6vw;
+    position: fixed;
+
+    .signin-form {
+        width: 100%;
+        margin-top: 19.4vw;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        img {
+            width: 73px;
+            height: 73px;
+        }
+
+        p {
+            height: 28px;
+            margin-top: 10px;
+            font-size: 20px;
+            font-weight: 600;
+            color: #555555;
+            line-height: 28px;
+        }
+
+        .signin-content {
+            margin-top: 12.3vw;
+            width: 100%;
+
+            .line {
+                width: 100%;
+                height: 62.5px;
+                display: flex;
+                align-items: center;
+                border-bottom: 1px solid $line-grey;
+
+                label {
+                    flex: 0 0 76px;
+                    display: block;
+                    height: 22.5px;
+                    line-height: 22.5px;
+                    font-size: 16px;
+                    font-weight: 500;
+                    text-align: left;
+                    color: #333333;
+                }
+
+                input {
+                    flex: 1;
+                    line-height: 22.5px;
+                    font-size: 16px;
+
+                    &::placeholder {
+                        color: #b0b0b0;
+                    }
+                }
+
+                .input-valcode {
+                    width: 100px;
+                }
+
+                .btn-valcode {
+                    flex: 1;
+                    height: 100%;
+                    line-height: 62.5px;
+                    font-size: 16px;
+                    background: none;
+                    text-align: right;
+                    cursor: pointer;
+                }
+            }
+
+            .btn-sign {
+                margin-top: 52px;
+                width: 100%;
+                height: 50px;
+                background: #06ba61;
+                border-radius: 25px;
+                box-shadow: 0px 11px 15px 0px rgba(6, 186, 97, 0.15);
+                font-size: 20px;
+                font-weight: 600;
+                text-align: center;
+                color: #fff;
+            }
+        }
+    }
+}

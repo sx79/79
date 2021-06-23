@@ -1,7 +1,7 @@
 import React from 'react';
 
 import '../assets/css/home-wrap.scss';
-import { Utils } from "../common";
+import { App, Utils } from "../common";
 import NavLink from "../common/NavLink";
 
 export default class HomeWrap extends React.Component {
@@ -17,6 +17,15 @@ export default class HomeWrap extends React.Component {
                 Utils.common.scrollTop();
             }, 500);
         });
+        if (window.location.hash.indexOf('signin') < 0) {
+            let recycler = App.getRecyclerProfile();
+            if (!recycler.id) {
+                App.logout();
+                App.go('/signin');
+            } else {
+                App.go('/home');
+            }
+        }
     }
 
     render() {

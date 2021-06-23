@@ -5,20 +5,20 @@ import CTYPE from "./CTYPE";
 import ImgLightbox from "./ImgLightbox";
 
 const expirePeriods = [{ key: '1D', label: '一天' },
-    { key: '3D', label: '三天' },
-    { key: '1W', label: '一周' },
-    { key: '1M', label: '一个月' },
-    { key: '3M', label: '三个月' },
-    { key: '6M', label: '六个月' },
-    { key: '1Y', label: '一年' },
-    { key: '2Y', label: '两年' },
-    { key: '3Y', label: '三年' },
-    { key: '5Y', label: '五年' },
-    { key: '10Y', label: '十年' }];
+{ key: '3D', label: '三天' },
+{ key: '1W', label: '一周' },
+{ key: '1M', label: '一个月' },
+{ key: '3M', label: '三个月' },
+{ key: '6M', label: '六个月' },
+{ key: '1Y', label: '一年' },
+{ key: '2Y', label: '两年' },
+{ key: '3Y', label: '三年' },
+{ key: '5Y', label: '五年' },
+{ key: '10Y', label: '十年' }];
 let Utils = (function () {
 
     let token = () => {
-        token = App.getCookie("user-token");
+        token = App.getCookie("recycler-token");
         return token;
     };
 
@@ -67,7 +67,6 @@ let Utils = (function () {
         let scrollTop = function () {
 
             let x = document.body.scrollTop || document.documentElement.scrollTop;
-            console.log(x);
             let timer = setInterval(function () {
                 x = x - 100;
                 if (x < 100) {

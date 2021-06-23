@@ -1,6 +1,6 @@
 import fetch from 'isomorphic-fetch';
-import {Toast} from 'antd-mobile';
-import {KvStorage, U} from "./index";
+import { Toast } from 'antd-mobile';
+import { App, KvStorage, U } from "./index";
 
 const hashHistory = require('history').createHashHistory();
 
@@ -17,7 +17,8 @@ if (process.env.API_ENV == 'prod') {
     ENV_CONFIG = require('./env/prod').default;
 }
 
-const API_BASE = ENV_CONFIG.api;
+const API_BASE = window.location.protocol + ENV_CONFIG.api;
+
 
 const api = (path, params = {}, options = {}) => {
 
@@ -29,28 +30,55 @@ const api = (path, params = {}, options = {}) => {
         options.defaultErrorProcess = true;
     }
 
-    let defaultError = {'errcode': 600, 'errmsg': '网络错误'};
+    let defaultError = { 'errcode': 600, 'errmsg': '网络错误' };
     let apiPromise = function (resolve, reject) {
         let rejectWrap = reject;
 
         if (options.defaultErrorProcess) {
             rejectWrap = function (ret) {
-                let {errmsg} = ret;
+                let { errmsg } = ret;
                 Toast.fail(errmsg);
                 reject(ret);
             };
         }
         let apiUrl = API_BASE + path;
 
+        var token = getCookie('recycler-token');
+        if (U.str.isNotEmpty(token)) {
+            params['recycler-token'] = token;
+        }
+
+        let dataStr = '';
+        for (let key in params) {
+            if (dataStr.length > 0) {
+                dataStr += '&';
+            }
+            if (params.hasOwnProperty(key)) {
+                let value = params[key];
+                if (value === undefined || value === null) {
+                    value = '';
+                }
+                dataStr += (key + '=' + encodeURIComponent(value));
+            }
+        }
+        if (dataStr.length === 0) {
+            dataStr = null;
+        }
+
         fetch(apiUrl, {
             method: 'POST',
-            body: U.url.serializeParameters(params),
+            body: dataStr,
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         }).then(function (response) {
             response.json().then(function (ret) {
                 let errcode = ret.errcode;
+                if (errcode === 5) {
+                    logout();
+                    App.go('/signin');
+                    return;
+                }
                 if (errcode) {
                     rejectWrap(ret);
                     return;
@@ -65,6 +93,8 @@ const api = (path, params = {}, options = {}) => {
         });
     };
 
+    return new Promise(apiPromise);
+
 };
 
 let saveCookie = (k, v) => KvStorage.set(k, v);
@@ -73,6 +103,20 @@ let removeCookie = (k) => KvStorage.remove(k);
 
 const go = function (hash) {
     hashHistory.push(hash);
+};
+
+
+let logout = () => {
+    removeCookie('recycler-token');
+    removeCookie('recycler-sess');
+};
+
+let getRecyclerProfile = function () {
+    return JSON.parse(getCookie('recycler-profile') || '{}');
+};
+
+let getRecyclerToken = function () {
+    return getCookie('recycler-token');
 };
 
 const REGION_PATH = window.location.protocol + '//c1.wakkaa.com/assets/pca-code.json';
@@ -84,4 +128,7 @@ export default {
     saveCookie,
     REGION_PATH,
     getCookie,
+    logout,
+    getRecyclerProfile,
+    getRecyclerToken,
 };
