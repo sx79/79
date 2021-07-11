@@ -101,12 +101,12 @@ export default class Signin extends React.Component {
                     <div className="line" >
                         <label>验证码</label>
                         <input type="text" className="input-valcode" placeholder="请输入验证码" onChange={(e) => this.modValCode('code', e.target.value)} />
-                        <div className="btn-valcode" onClick={() => {
+                        <div className="btn-valcode"><span onClick={() => {
                             if (!isMobile) {
                                 Toast.fail(<span>请输入正确的手机号</span>);
                             }
                             return isMobile && !disabled && this.sendValCode();
-                        }}>{disabled ? `${count}秒后获取` : '获取验证码'}</div>
+                        }}>{disabled ? `${count}秒后获取` : '获取验证码'}</span></div>
                     </div>
                     <button className="btn-sign" onClick={() => {
                         this.signin()

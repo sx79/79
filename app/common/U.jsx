@@ -6,6 +6,12 @@ var U = (function () {
 
     var str = (function () {
 
+        let formatMobile = (mobile) => {
+            if (mobile) {
+                return mobile.substr(0, 3) + '****' + mobile.substr(7, 11);
+            }
+            return mobile;
+        }
         let isChinaMobile = (mobile) => {
             return mobile.length == 11;
         };
@@ -191,7 +197,7 @@ var U = (function () {
         };
 
         return {
-            isEmpty, isNotEmpty, emptyToNull, nullToEmpty, rn2br,
+            isEmpty, isNotEmpty, emptyToNull, nullToEmpty, rn2br, formatMobile,
             startsWith, endsWith, replaceAll, trim, isNull, isNotNull, isIdentity,
             num2str, isChinaMobile, trimChinaMobile, randomString, formatBankNo, bankNoTail, formatMoney, isCanvasBlank
         };

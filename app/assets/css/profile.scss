@@ -3,6 +3,113 @@
 @import "mixin";
 
 .profile-page {
+    .top {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 52.2vw;
+        background: #fff;
 
- 
+        img {
+            width: 15.5vw;
+            height: 15.5vw;
+            border-radius: 50%;
+        }
+
+        .name {
+            font-size: 18px;
+            font-weight: 500;
+            color: $font-dark;
+        }
+
+        .number {
+            font-size: 13px;
+            font-weight: 400;
+            color: $font-gray;
+        }
+    }
+
+    .am-list {
+        margin-top: 2.6vw;
+
+        .am-list-body {
+
+            .am-list-item {
+                height: 14.5vw;
+
+                .am-list-line {
+                    .am-list-content {
+                        display: flex;
+                        align-items: center;
+                        font-size: 16px;
+                        font-weight: 500;
+                        text-align: left;
+                        color: $font-dark;
+
+
+                        &::after {
+                            right: 5px;
+                        }
+
+                        i {
+                            margin-right: 2.6vw;
+                            display: block;
+                            width: 16px;
+                            height: 16px;
+                        }
+
+                        .work {
+                            background: url('../image/profile/icon_work.png') center no-repeat;
+                            background-size: contain;
+                        }
+
+                        .trade {
+                            background: url('../image/profile/icon_profile_trade.png') center no-repeat;
+                            background-size: contain;
+                        }
+
+                        .mobile {
+                            background: url('../image/profile/icon_mobile.png') center no-repeat;
+                            background-size: contain;
+                        }
+
+                    }
+
+                    .am-list-extra {
+                        font-size: 16px;
+                        font-weight: 500;
+                        color: #333333;
+                    }
+
+                    .am-switch {
+                        .checkbox {
+                            position: relative;
+                            width: 11.6vw;
+                            height: 6vw;
+
+                            &::after {
+                                top: 0.3vw;
+                                width: 5.5vw;
+                                height: 5.5vw;
+                            }
+                        }
+                    }
+
+                    .am-list-arrow {
+                        background: none;
+                        @include border-arrow(#333333, 0.6vw, 10px);
+                    }
+                }
+            }
+
+            &::before {
+                display: none;
+            }
+
+            &::after {
+                display: none;
+            }
+        }
+    }
 }

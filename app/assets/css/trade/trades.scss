@@ -1,0 +1,169 @@
+@import "../color";
+@import "../variables";
+@import "../mixin";
+
+.trades-page {
+    .tabs {
+        padding: 0 4vw;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100vw;
+        height: 10.6vw;
+        background: #fff;
+
+        li {
+            position: relative;
+            flex: 1;
+            font-size: 14px;
+            font-weight: 400;
+            text-align: center;
+            color: #4a4a4a;
+        }
+
+        .active {
+            position: relative;
+            font-size: 15px;
+            font-weight: 600;
+            color: #333333;
+
+            &::after {
+                position: absolute;
+                bottom: -2vw;
+                left: 50%;
+                display: block;
+                content: "";
+                width: 25px;
+                height: 4px;
+                border-radius: 2px;
+                background: $primary-color;
+                transform: translateX(-50%);
+            }
+        }
+    }
+
+    .trades {
+        margin-top: 2.7vw;
+        padding: 0 4vw;
+
+        li {
+            padding: 2.5vw 3vw;
+            margin-bottom: 2.7vw;
+            width: 100%;
+            height: calc(92vw * 0.6);
+            border-radius: 1.6vw;
+            background: #fff;
+
+            .title {
+                position: relative;
+                display: flex;
+                width: 100%;
+                height: 9vw;
+
+                .trade-id {
+                    display: flex;
+                    flex: 1;
+                    font-size: 16px;
+                    font-weight: 500;
+                    text-align: left;
+                    color: #333333;
+
+                    i {
+                        margin-top: 1.5vw;
+                        margin-right: 6px;
+                        display: block;
+                        flex: 0 0 13px;
+                        width: 13px;
+                        height: 15px;
+                        background: url('../../image/trade/icon_trade.png') center no-repeat;
+                        background-size: contain;
+                    }
+                }
+
+                .distance {
+                    display: flex;
+                    flex: 1;
+                    font-size: 16px;
+                    font-weight: 500;
+                    text-align: left;
+                    color: #333333;
+
+                    i {
+                        margin-top: 1.5vw;
+                        margin-right: 6px;
+                        display: block;
+                        flex: 0 0 13px;
+                        width: 13px;
+                        height: 15px;
+                        background: url('../../image/grab/icon_address.png') center no-repeat;
+                        background-size: contain;
+                    }
+                }
+
+                .detail {
+                    margin-top: 1.3vw;
+                    font-size: 12px;
+                    font-weight: 350;
+                    text-align: right;
+                    color: #9a9a9a;
+                    @include border-arrow(#9a9a9a, 1.2vw);
+
+                }
+
+                &::before {
+                    position: absolute;
+                    bottom: 0;
+                    right: -50%;
+                    content: '';
+                    width: 200%;
+                    height: 1px;
+                    opacity: .5;
+                    background: #9A9A9A;
+                    transform: scale(.5);
+                }
+
+            }
+
+            .content {
+                padding: 2.6vw 0 0 0;
+
+                li {
+                    display: flex;
+                    padding: 0;
+                    margin-bottom: 0;
+                    width: 100%;
+                    height: calc(86vw * 0.0838);
+                    line-height: 27px;
+                    background: none;
+
+                    .label {
+                        flex: 0 0 72px;
+                        font-size: 14px;
+                        font-weight: 400;
+                        text-align: justify;
+                        text-align-last: justify;
+                        color: #9a9a9a;
+                    }
+
+                    .control {
+                        margin-left: 5px;
+                        flex: 1;
+                        font-size: 14px;
+                        font-weight: 400;
+                        text-align: left;
+                        color: #555555;
+                        @include multi-line(1);
+                    }
+                }
+            }
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
+
+    .ant-empty {
+        margin-top: 37vw;
+    }
+}

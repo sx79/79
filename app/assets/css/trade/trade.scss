@@ -1,0 +1,296 @@
+@import "../color";
+@import "../variables";
+@import "../mixin";
+
+.trade-page {
+    padding-bottom: 15vw;
+
+    .top-bar {
+        margin-bottom: 2.66vw;
+        padding: 0 4vw;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 10.66vw;
+        background: #fff;
+
+        .trade-id {
+            flex: 1;
+            font-size: 14px;
+            font-weight: 350;
+            text-align: left;
+            color: $font-dark;
+        }
+
+        .status {
+            flex: 0 0 11.2vw;
+            color: #ff7419;
+        }
+
+        .success {
+            color: #9a9a9a;
+        }
+    }
+
+    .top {
+        margin-bottom: 10px;
+        padding: 4vw 0;
+        display: flex;
+        flex-direction: column;
+        height: calc(100vw * 0.4);
+        background: #fff;
+
+        .base-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+
+            .status {
+                flex: 1;
+                font-size: 16px;
+                font-weight: 600;
+                text-align: center;
+                color: $primary-color;
+            }
+
+            .wait-door {
+                color: #ff7419;
+            }
+
+            .success {
+                color: #9a9a9a;
+            }
+
+            .trade-id {
+                flex: 1;
+                font-size: 12px;
+                font-weight: 350;
+                text-align: center;
+                color: #bbbbbb;
+            }
+        }
+
+        .recycler-info {
+            margin-top: 2.66vw;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            .avatar {
+                flex: 0 0 10.66vw;
+                width: 10.66vw;
+                height: 10.66vw;
+                border-radius: 50%;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: contain;
+            }
+
+            .recycle-txt {
+                flex: 1;
+                font-size: 12px;
+                font-weight: 350;
+                text-align: center;
+                color: #b0b0b0;
+                line-height: 10.66vw;
+            }
+        }
+
+    }
+
+    .title {
+        padding: 0 4vw;
+        display: flex;
+        align-items: center;
+        height: 13.33vw;
+        font-size: 16px;
+        font-weight: 600;
+        text-align: left;
+        color: $font-dark;
+    }
+
+    .carts-comp {
+        margin-bottom: 2.66vw;
+        background: #fff;
+    }
+
+    .trade {
+        margin-bottom: 10px;
+        padding-bottom: 5.7vw;
+        background: #fff;
+
+        .title-bar {
+            height: 13.33vw;
+
+            .txt {
+                line-height: 13.33vw;
+            }
+        }
+
+        .content {
+            padding: 0 4vw;
+
+            li {
+                display: flex;
+                padding: 0;
+                margin-bottom: 0;
+                width: 100%;
+                line-height: 27px;
+                background: none;
+
+                .label {
+                    flex: 0 0 72px;
+                    font-size: 14px;
+                    font-weight: 300;
+                    text-align: justify;
+                    text-align-last: justify;
+                    color: #9a9a9a;
+                }
+
+                .control {
+                    position: relative;
+                    margin-left: 5px;
+                    flex: 1;
+                    font-size: 14px;
+                    font-weight: 350;
+                    text-align: left;
+                    color: #555555;
+
+                    .copy {
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        font-weight: 300;
+                        text-align: right;
+                        color: $primary-color;
+                    }
+
+                    img {
+                        width: 14.13vw;
+                        height: 14.13vw;
+                        margin-left: 1.3vw;
+                        margin-top: 1.3vw;
+
+                        &:first-child {
+                            margin-left: 0;
+                            margin-top: 0;
+                        }
+
+                        &:nth-child(2) {
+                            margin-top: 0;
+                        }
+
+                        &:nth-child(3) {
+                            margin-top: 0;
+                        }
+
+                        &:nth-child(4n) {
+                            margin-top: 0;
+                            margin-left: 0;
+                        }
+                    }
+
+
+                }
+
+
+            }
+
+            .imgs {
+                margin-top: 1.6vw;
+
+                .label {
+                    line-height: 14px;
+                }
+            }
+        }
+    }
+
+    .trade-finish {
+        margin: 0 auto 2.16vw;
+        width: 92vw;
+        border-radius: 1.6vw;
+    }
+
+    .trade-base {
+        padding: 3.73vw 0;
+    }
+
+    .btn-wrap {
+        position: fixed;
+        bottom: 0;
+        display: flex;
+        padding: 1.3vw 4vw 4vw;
+        width: 100%;
+        background: #fff;
+
+        .trade-total {
+            display: flex;
+            width: 100%;
+
+            .tatol-content {
+                flex: 1;
+                display: flex;
+                align-items: flex-end;
+
+                .total-label {
+                    flex: 0 0 70px;
+                    font-size: 13px;
+                    font-weight: 400;
+                    text-align: left;
+                    color: #555555;
+                }
+
+                .total-value {
+                    flex: 1;
+                    font-size: 16px;
+                    font-weight: 700;
+                    text-align: left;
+                    color: #c4381b;
+                }
+            }
+        }
+
+        .btn {
+            display: flex;
+
+            width: 100%;
+            height: calc(92vw * 0.1);
+            color: $font-default;
+            font-size: 15px;
+            font-weight: 500;
+            color: #555555;
+            text-align: justify;
+            line-height: 9.3vw;
+
+            .btn-common {
+                margin-right: 1.6vw;
+                flex: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: calc((92vw * 0.1) / 2);
+
+                &:last-child {
+                    margin: 0;
+                }
+            }
+
+            .contact {
+                border: 1px solid #b0b0b0;
+            }
+
+            .cacalcel {
+                background: #efefef;
+            }
+
+            .collate {
+                color: #fff;
+                background: $primary-color;
+            }
+        }
+    }
+
+}

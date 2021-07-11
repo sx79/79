@@ -6,7 +6,7 @@
     width: 100vw;
     height: 100vh;
     background: #fff;
-    padding: 0 6vw;
+    padding: 0 8vw;
     position: fixed;
 
     .signin-form {
@@ -35,11 +35,23 @@
             width: 100%;
 
             .line {
+                position: relative;
                 width: 100%;
                 height: 62.5px;
                 display: flex;
                 align-items: center;
-                border-bottom: 1px solid $line-grey;
+
+                &::after {
+                    content: "";
+                    position: absolute;
+                    bottom: 0;
+                    left: -50%;
+                    display: block;
+                    width: 200%;
+                    height: 1px;
+                    background: #dfdfdf;
+                    transform: scale(.5);
+                }
 
                 label {
                     flex: 0 0 76px;
@@ -70,10 +82,15 @@
                     flex: 1;
                     height: 100%;
                     line-height: 62.5px;
-                    font-size: 16px;
+
                     background: none;
                     text-align: right;
                     cursor: pointer;
+
+                    span {
+                        font-size: 16px;
+                        color: $primary-color;
+                    }
                 }
             }
 
