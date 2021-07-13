@@ -28,14 +28,53 @@ export default class Trades extends React.Component {
     }
 
     loadTrades = () => {
-        App.api('recy/trade/my_trades').then(allTrades => {
-            console.log(allTrades);
-            allTrades.map((trade, index) => {
-                trade.distance = 1500 + ((index + 1) * 456);
+        let { pagination = {}, status } = this.state;
+        App.api("/recy/trade/trades", {
+            tradeQo: JSON.stringify({
+                pageSize: pagination.pageSize,
+                pageNumber: pagination.current,
+                status,
+                lat: 34.602837, lng: 113.726738
+            })
+        }).then((result) => {
+            console.log(result);
+            let { trades = [] } = result;
+            this.setState({
+                trades: trades,
+                pagination,
+                initializing: 2,
+                last: result.last,
             });
-            this.setState({ allTrades, trades: allTrades.filter(it => it.status == 2) });
         });
-    }
+    };
+
+    loadMore = (resolve) => {
+        let { pagination = {}, status } = this.state;
+        pagination.current = pagination.current + 1;
+        App.api('/recy/trade/trades', {
+            tradeQo: JSON.stringify({
+                pageNumber: pagination.current,
+                pageSize: pagination.pageSize,
+                status,
+                lat: 34.602837, lng: 113.726738
+            })
+        }).then(result => {
+            let { trades = [] } = result;
+            this.setState((prevState) => ({
+                trades: prevState.trades.concat(trades),
+                pagination,
+                initializing: 2,
+                last: result.last
+            }));
+        });
+        resolve && resolve();
+    };
+
+    refresh = (resolve, reject) => {
+        let { pagination = {} } = this.state;
+        this.setState({ pagination: { ...pagination, current: 1 } }, () => this.loadTrades());
+        resolve && resolve();
+    };
 
     getCartsCategoryNames = (carts = []) => {
         let { categories = [] } = this.state;
@@ -90,7 +129,9 @@ export default class Trades extends React.Component {
             return parseInt(a.periods[0]) - parseInt(b.periods[0]);
         });
 
-        console.log(trades);
+        _trades.sort((a, b) => {
+            return a.distance - b.distance;
+        });
 
         return <div className="trades-page">
             <ul className="tabs">
@@ -118,7 +159,7 @@ export default class Trades extends React.Component {
 
                     return <li key={index} onClick={() => this.go(tradeId)}>
                         <div className="title" onClick={() => this.go(tradeId)}>
-                            <div className={isFinish ? 'trade-id' : 'distance'}><i />{isFinish ? `订单编号${tradeId}` : `距离你${U.formatCurrency(distance / 1000, 1)}km`}</div>
+                            <div className={isFinish ? 'trade-id' : 'distance'}><i />{isFinish ? `订单编号${tradeId}` : `距离你${U.formatCurrency(distance / 1000, 2)}km`}</div>
                             {isFinish && <div className="detail">查看详情&nbsp;</div>}
                         </div>
                         <ul className="content">

@@ -1,7 +1,7 @@
 import React from 'react';
 import '../../assets/css/trade/trade.scss';
 import { App, CTYPE, U, Utils, OSSWrap } from '../../common';
-import { Carts, ProgressStep, CalcelTrade } from '../Comps';
+import { Carts, ProgressStep, CancelTrade } from '../Comps';
 import classnames from 'classnames';
 
 import { Modal } from 'antd-mobile';
@@ -43,8 +43,9 @@ export default class Trade extends React.Component {
     //     });
     // }
 
-    calcelTrade = () => {
-        Utils.common.renderReactDOM(<CalcelTrade />)
+    cancelTrade = () => {
+        let { trade = {} } = this.state;
+        Utils.common.renderReactDOM(<CancelTrade trade={trade} />)
     }
 
 
@@ -138,8 +139,8 @@ export default class Trade extends React.Component {
             <div className="btn-wrap">
                 {status == 2 && <div className="btn">
                     <div className="btn-common contact">联系客户</div>
-                    <div className="btn-common cacalcel" onClick={this.calcelTrade}>取消订单</div>
-                    <div className="btn-common collate">核对订单</div>
+                    <div className="btn-common cancel" onClick={this.cancelTrade}>取消订单</div>
+                    <div className="btn-common collate" onClick={() => App.go(`/collate/${tradeId}`)}>核对订单</div>
                 </div>}
                 {status == 3 && <div className="trade-total">
                     <div className="tatol-content">

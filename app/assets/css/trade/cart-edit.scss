@@ -1,0 +1,115 @@
+@import "../color";
+@import "../variables";
+@import "../mixin";
+
+#div-drawer-cart-edit {
+    .ant-drawer-content {
+        border-radius: 3.2vw 3.2vw 0 0;
+
+        .ant-drawer-body {
+            padding: 0 !important;
+        }
+    }
+
+    .ant-drawer-header {
+        border: none;
+    }
+
+    .ant-drawer-title {
+        .title {
+            position: relative;
+            width: 100% !important;
+            font-size: 16px;
+            font-weight: 500;
+            text-align: center;
+            color: #000000;
+            width: 192px;
+
+            .cancel {
+                position: absolute;
+                right: 10px;
+                bottom: -3px;
+                font-size: 12px;
+                color: #b0b0b0;
+            }
+        }
+    }
+
+    .wrap {
+        padding: 0 4vw 16vw 4vw;
+        height: 100%;
+        overflow-y: scroll;
+
+        .ant-collapse-header {
+            padding-left: 0;
+            padding-right: 16px;
+            color: #000000;
+
+            span {
+                font-size: 16px;
+                font-weight: 450;
+                text-align: left;
+            }
+
+            .ant-collapse-extra {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 24px;
+                font-size: 14px;
+                font-weight: 400;
+                text-align: right;
+            }
+
+            .anticon {
+                right: 0;
+            }
+        }
+
+        .ant-collapse-content-box {
+            padding: 0;
+        }
+
+        .category {
+            li {
+                margin-bottom: 5px;
+                padding-left: 10px;
+                height: 35px;
+                border: 1px solid #f8f8f8;
+                border-radius: 4px;
+                font-size: 14px;
+                font-weight: 400;
+                line-height: 35px;
+                text-align: left;
+                color: #000000;
+                background: #f8f8f8;
+
+                &:last-child {
+                    margin-bottom: 0;
+                }
+            }
+
+            .active {
+                color: #c4381b;
+                background: #fff1f1;
+                border: 1px solid #c4381b;
+            }
+        }
+    }
+
+    .btn {
+        position: fixed;
+        bottom: 0;
+        padding: 2vw 4vw 5vw;
+        width: 100%;
+        background: #fff;
+
+        .ant-btn-primary {
+            width: 100%;
+            height: 35px;
+            border: none;
+            border-radius: 4vw;
+            background: $primary-color;
+        }
+    }
+}

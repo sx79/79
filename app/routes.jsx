@@ -9,6 +9,7 @@ import Signin from './component/signin/Signin';
 
 import Trades from './component/trade/Trades';
 import Trade from './component/trade/Trade';
+import Collate from './component/trade/Collate';
 
 const routes = (
     <HashRouter>
@@ -23,6 +24,8 @@ const routes = (
             <Route path='/trades' component={Trades} />
 
             <Route path='/trade/:tradeId' component={Trade} />
+
+            <Route path='/collate/:tradeId' component={Collate} />
 
             <Route path='/' children={() => (
                 <HomeWrap>
