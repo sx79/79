@@ -4,7 +4,7 @@ import { App, U, Utils } from "../common";
 import Tloader from "./common/react-touch-loader";
 
 import classnames from 'classnames';
-import { Empty, message } from 'antd';
+import { Empty, message, Spin } from 'antd';
 import { FrownOutlined } from '@ant-design/icons';
 
 export default class Grab extends React.Component {
@@ -19,12 +19,14 @@ export default class Grab extends React.Component {
             },
             status: 1,
             trades: [],
+            currT: new Date().getTime(),
         };
     }
 
     componentDidMount() {
         Utils.addr.loadRegion(this);
         U.setWXTitle("抢单中心");
+        this.doInterval();
         this.loadData();
         this.loadCategories();
     }
@@ -33,24 +35,40 @@ export default class Grab extends React.Component {
         clearInterval(this.timerId);
     }
 
+    doInterval = () => {
+        this.timerId = setInterval(() => {
+            this.setState({ currT: new Date().getTime() });
+        }, 1000)
+    }
+
+    getQuery = (pagination = {}) => {
+        let { sorter = {}, status } = this.state;
+        let { sortFiled = 'id', sortAscDesc = 'desc' } = sorter;
+
+        let param = {};
+        param['tradeQo'] = JSON.stringify({
+            sortPropertyName: sortFiled,
+            sortAscending: sortAscDesc === 'asc',
+            pageNumber: pagination.current,
+            pageSize: pagination.pageSize,
+            status,
+            lat: 34.602837, lng: 113.726738
+        });
+        return param;
+    };
+
 
     loadData = () => {
-        let { pagination = {}, status } = this.state;
+        let { pagination = {} } = this.state;
         App.api("/recy/trade/grabs", {
-            tradeQo: JSON.stringify({
-                pageSize: pagination.pageSize,
-                pageNumber: pagination.current,
-                status,
-                lat: 34.602837, lng: 113.726738
-            })
+            ...this.getQuery(pagination)
         }).then((result) => {
-            console.log(result);
-            let { trades = [] } = result;
+            let { trades = [], page = {} } = result;
             this.setState({
                 trades: trades,
                 pagination,
                 initializing: 2,
-                last: result.last,
+                last: page.last,
             });
         });
     };
@@ -59,19 +77,14 @@ export default class Grab extends React.Component {
         let { pagination = {}, status } = this.state;
         pagination.current = pagination.current + 1;
         App.api('/recy/trade/grabs', {
-            tradeQo: JSON.stringify({
-                pageNumber: pagination.current,
-                pageSize: pagination.pageSize,
-                status,
-                lat: 34.602837, lng: 113.726738
-            })
+            ...this.getQuery(pagination)
         }).then(result => {
-            let { trades = [] } = result;
+            let { trades = [], page = {} } = result;
             this.setState((prevState) => ({
                 trades: prevState.trades.concat(trades),
                 pagination,
                 initializing: 2,
-                last: result.last
+                last: page.last
             }));
         });
         resolve && resolve();
@@ -131,38 +144,21 @@ export default class Grab extends React.Component {
         });
     }
 
-
-    timing = (time) => {
-        let { times = [] } = this.state;
-        let cindex = time.cindex;
-        let diff = time.diff;
-        if (diff <= 0) {
-            return;
-        }
-        this.timeId = setInterval(() => {
-            if (times[cindex]) {
-                time = { ...time, diff: diff - 1000 }
-            } else {
-                times.push(time);
-            }
-            this.setState({ times });
-
-        }, 1000);
-    }
-
-
     render() {
-        let { trades = [], status, pagination = {}, initializing, last, index = 0, times = [] } = this.state;
-
+        let { trades = [], status, pagination = {}, initializing, last, index = 0, currT } = this.state;
         let length = trades.length;
+        if (length < 0) {
+            return <Spin />
+        }
         trades.sort((a, b) => {
             return a.distance - b.distance;
         });
+        let emptyEleLength = 0;
         return <div className="grab-page">
-            {trades.length <= 0 && <Empty description="您暂时没有相关订单！" image={<img src={require('../assets/image/grab/bg_not_trade.png')} />} />}
+
             <ul className="trades" >
                 {trades.map((trade, index) => {
-                    let { tradeId, createdAt, status, address = {}, periods = [], carts = [], totalPrice = 0, distance } = trade;
+                    let { tradeId, createdAt, status, address = {}, visitedStartAt, visitedEndAt, carts = [], totalPrice = 0, distance } = trade;
                     let { name, mobile, detail, location = {} } = address;
                     let { code } = location;
                     let codes = Utils.addr.getPCD(code);
@@ -171,17 +167,21 @@ export default class Grab extends React.Component {
                     if (codes && codes.length > 0) {
                         str = codes.replace(/\s*/g, '');
                     }
-                    let diff = createdAt - new Date().getTime() + 1800000;
-                    if (diff > 0) {
-                        this.timing({ cindex: index, diff: diff });
-                    }
+                    let countdown = '等待指派中';
 
-                    let start = U.date.format(new Date(parseInt(periods[0])), 'yyyy-MM-dd HH:mm');
-                    let end = U.date.format(new Date(parseInt(periods[1])), 'HH:mm');
+                    let diff = createdAt - currT + 1800000;
+                    if (diff > 0) {
+                        countdown = `剩余时间:${U.date.seconds2MS(diff / 1000)}`;
+                    } else {
+                        // emptyEleLength += 1;
+                        // return <div></div>
+                    }
+                    let start = U.date.format(new Date(visitedStartAt), 'yyyy-MM-dd HH:mm');
+                    let end = U.date.format(new Date(visitedEndAt), 'HH:mm');
 
                     let period = start + ' - ' + end;
 
-                    let isNotGrap = distance > 30000;
+                    let isNotGrap = distance > 20000;
 
                     return <li key={index}>
                         {isNotGrap && <div className="tip">
@@ -192,7 +192,7 @@ export default class Grab extends React.Component {
                         <div className="card">
                             <div className="title">
                                 <div className="distance"><i />距离你{U.formatCurrency(distance / 1000, 2)}km</div>
-                                {<div className="rest">{diff > 0 ? `剩余时间：${U.date.format(new Date(diff), 'mm:ss')}` : '等待管理指派中'}</div>}
+                                {!isNotGrap && <div className="rest">{countdown}</div>}
                             </div>
                             <ul className="content">
                                 <li>
@@ -219,7 +219,7 @@ export default class Grab extends React.Component {
                             </ul>
                             <div className="footer">
                                 <div className="navigation"><i />导航</div>
-                                <div className={classnames('grab', { 'not-grap': isNotGrap })} onClick={() => {
+                                <div className={classnames('grab', { 'not-grap': isNotGrap || diff < 0 })} onClick={() => {
                                     if (isNotGrap || status != 1) {
                                         return;
                                     }
@@ -230,8 +230,8 @@ export default class Grab extends React.Component {
                     </li>
                 })}
             </ul>
-
-            {length > 0 && <Tloader
+            {(length <= 0 || emptyEleLength === length) && <Empty description="您暂时没有相关订单！" image={<img src={require('../assets/image/grab/bg_not_trade.png')} />} />}
+            {length > 0 && emptyEleLength < length && <Tloader
                 className="main"
                 autoLoadMore
                 onRefresh={this.refresh} onLoadMore={this.loadMore} hasMore={!last}

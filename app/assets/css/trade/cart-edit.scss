@@ -8,6 +8,7 @@
 
         .ant-drawer-body {
             padding: 0 !important;
+            background: #f5f5f5;
         }
     }
 
@@ -36,9 +37,10 @@
     }
 
     .wrap {
-        padding: 0 4vw 16vw 4vw;
-        height: 100%;
+        padding: 0 4vw 20px 4vw;
+        height: calc(100% - 122px);
         overflow-y: scroll;
+        background: #fff;
 
         .ant-collapse-header {
             padding-left: 0;
@@ -90,26 +92,339 @@
             }
 
             .active {
-                color: #c4381b;
-                background: #fff1f1;
-                border: 1px solid #c4381b;
+                color: $primary-color;
+                background: rgba($color: $green, $alpha: 0.1);
+                border: 1px solid $primary-color;
+            }
+        }
+
+        .ant-radio-group {
+            width: 100%;
+            line-height: 0;
+
+            .ant-radio-button-wrapper {
+                margin-left: 6px;
+                margin-top: 6px;
+                width: calc((100% - 10px) / 2);
+                height: 35px;
+                background: #f8f8f8;
+                border-radius: 4px;
+                border: 1px solid #f8f8f8;
+                font-size: 14px;
+                text-align: left;
+                color: #333333;
+
+                &:nth-child(2n+1) {
+                    margin-left: 0;
+                }
+
+                &::before {
+                    display: none;
+                }
+            }
+
+            .ant-radio-button-wrapper-checked {
+                background: rgba($color: $green, $alpha: 0.1);
+                border: 1px solid $green;
+
+                span {
+                    &:last-child {
+                        color: $primary-color;
+                    }
+                }
+
+                &:focus-within {
+                    box-shadow: none;
+                }
+            }
+        }
+
+        .exceed {
+            position: absolute;
+            top: -7px;
+            left: -72px;
+            display: block;
+            width: calc(92vw - 26px) !important;
+            height: 47px !important;
+            font-size: 20px;
+            line-height: 24px;
+            transform: scale(.5);
+        }
+
+        .ant-checkbox-group {
+            margin-top: 5px;
+            width: 100%;
+            line-height: 0;
+
+            .ant-checkbox-group-item {
+                margin-right: 0;
+
+                .ant-checkbox-inner {
+                    background: #f8f8f8;
+                    border-radius: 4px;
+                }
+
+            }
+
+            .ant-checkbox-wrapper {
+                position: relative;
+                margin-top: 6px;
+                margin-right: 6px;
+                width: calc((100% - 10px) / 2);
+                height: 35px;
+                line-height: 35px;
+
+                .ant-checkbox {
+                    position: absolute;
+                    top: -1px;
+                    width: 100%;
+                    height: 100%;
+
+                    .ant-checkbox-inner {
+                        width: 100%;
+                        height: 100%;
+                    }
+
+                }
+
+                span {
+                    &:last-child {
+                        position: absolute;
+                        z-index: 2;
+                        width: 100%;
+                        height: 100%;
+                    }
+                }
+
+                &:first-child {
+                    margin-top: 0;
+                }
+
+                &:nth-child(2n) {
+                    margin-top: 0;
+                    margin-right: 0;
+                }
+            }
+
+            .ant-checkbox {
+                &::after {
+                    display: none;
+                }
+            }
+
+            .ant-checkbox-group-item {
+                .ant-checkbox-inner {
+                    border-color: transparent;
+                }
+            }
+
+            .ant-checkbox-wrapper-checked {
+                position: relative;
+
+                .ant-checkbox-inner {
+                    display: block;
+                    border: 1px solid $primary-color;
+                    border-color: $primary-color;
+                    border-radius: 4px;
+                    background: rgba($color: $green, $alpha: 0.1);
+
+                    &::after {
+                        display: none;
+                    }
+                }
+
+                span {
+                    &:last-child {
+                        color: $primary-color;
+                    }
+                }
+            }
+        }
+
+    }
+
+    .footer-wrap {
+        position: fixed;
+        bottom: 0;
+        z-index: 10;
+        width: 100%;
+        height: 112px;
+        background: #fff;
+
+        .footer {
+            padding: 0 16px;
+
+            .number-wrap {
+                margin-bottom: 4px;
+                display: flex;
+                height: 55px;
+                line-height: 55px;
+
+                .txt {
+                    flex: 1;
+                    // width: 160px;
+                    font-size: 16px;
+                    font-weight: 500;
+                    text-align: left;
+                    color: #000000;
+
+                    span {
+                        position: relative;
+                        top: 2px;
+                        margin-left: 6px;
+                        display: inline-block;
+                        transform: scale(2);
+                    }
+                }
+
+                .number {
+                    flex: 0 0 100px;
+                    display: flex;
+                    align-items: center;
+                    width: 100px;
+
+                    .btn {
+                        margin-right: -13px;
+                        z-index: 2;
+                        position: relative;
+                        float: left;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 27px;
+                        height: 27px;
+                        border-radius: 50%;
+                        color: #fff;
+                        text-align: center;
+                        background: $primary-color;
+                        overflow: hidden;
+                    }
+
+                    .ant-input-number {
+                        float: left;
+                        z-index: 1;
+                        width: 60px;
+                        height: 30px;
+                        border: none;
+                        background: #f8f8f8;
+
+                        .ant-input-number-input {
+                            font-size: 16px;
+                            text-align: center;
+                            padding: 0 20px;
+                        }
+                    }
+
+                    .ant-input-number-focused {
+                        box-shadow: none;
+                    }
+
+                    .anticon-minus {
+                        display: block;
+                        transform: scale(1.4);
+
+                        svg {
+                            height: 12px;
+                        }
+                    }
+
+                    .minus {
+                        background: #dfdfdf;
+                    }
+
+                    .plus {
+                        z-index: 1;
+                        padding-top: 1px;
+                        margin-left: -13px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 27px;
+                        height: 27px;
+                        font-size: 22px;
+                        color: #fff;
+                        border-radius: 50%;
+                        background: $primary-color;
+
+                    }
+                }
+            }
+
+            .btn-wrap {
+                display: flex;
+
+                .price {
+                    flex: 1;
+                    display: flex;
+                    font-size: 15px;
+                    font-weight: 400;
+                    line-height: 35px;
+                    text-align: left;
+                    color: #333333;
+
+                    span {
+                        flex: 1;
+                        font-size: 16px;
+                        color: $primary-color;
+                    }
+                }
+
+                .ant-btn {
+                    flex: 0 0 156px;
+                    width: 156px;
+                    height: 35px;
+                    border: 1px solid $primary-color;
+                    border-radius: 17px;
+                    background: $primary-color;
+                }
             }
         }
     }
 
-    .btn {
-        position: fixed;
-        bottom: 0;
-        padding: 2vw 4vw 5vw;
-        width: 100%;
-        background: #fff;
+    // .btn {
+    //     z-index: 3;
+    //     position: fixed;
+    //     bottom: 0;
+    //     padding: 2vw 4vw 5vw;
+    //     width: 100%;
+    //     background: #fff;
 
-        .ant-btn-primary {
-            width: 100%;
-            height: 35px;
-            border: none;
-            border-radius: 4vw;
-            background: $primary-color;
+    //     .ant-btn-primary {
+    //         width: 100%;
+    //         height: 35px;
+    //         border: none;
+    //         border-radius: 4vw;
+    //         background: $primary-color;
+    //     }
+    // }
+}
+
+.am-modal-mask {
+    z-index: 9998;
+}
+
+.am-modal-wrap {
+    z-index: 9999;
+
+    .am-modal-input {
+        position: relative;
+        padding: 0 3vw 0 24px;
+
+        label {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        &::after {
+            position: absolute;
+            top: 50%;
+            left: 10px;
+            content: '¥';
+            display: block;
+            font-size: 16px;
+            transform: translateY(-50%);
+            // font-weight: 600;
         }
     }
 }

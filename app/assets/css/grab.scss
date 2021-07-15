@@ -79,9 +79,10 @@
           }
 
           .rest {
-            flex: 0 0 28vw;
+            flex: 0 0 32vw;
+            display: flex;
+            justify-content: flex-end;
             font-size: 13px;
-            width: 210px;
             font-weight: 500;
             color: #c4381b;
           }

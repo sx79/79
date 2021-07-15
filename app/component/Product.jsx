@@ -12,8 +12,6 @@ export default class Product extends React.Component {
         super(props);
         this.state = {
             id: parseInt(this.props.match.params.id),
-
-
         };
     }
 

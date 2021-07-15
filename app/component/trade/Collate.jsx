@@ -88,24 +88,57 @@ export default class Collate extends React.Component {
         });
     };
 
+    collateAndSaveTrade = () => {
+        let { trade = {}, recyCancelMark } = this.state;
+        let { carts = [], imgs = [], tradeInfo = {} } = trade;
+        if (carts.length < 1) {
+            Toast.fail("请核实回收物品是否存在");
+            return;
+        }
+        if (imgs.length < 1) {
+            Toast.fail("请核实图片是否存在");
+            return;
+        }
+        if (!recyCancelMark) {
+            Toast.fail("请填写核实后的备注");
+            return;
+        }
+
+        App.api('/recy/trade/collate_save_trade', {
+            trade: JSON.stringify({
+                ...trade,
+                tradeInfo: {
+                    ...tradeInfo,
+                    recyCancelMark,
+                }
+            })
+        }).then(() => {
+            Toast.success("订单已完成");
+            App.go('/trades');
+        });
+    }
+
     render() {
 
         let { tradeId, trade = {}, categories = [], uploading = false } = this.state;
-        let { carts = [], imgs = [] } = trade;
+        let { carts = [], imgs = [], totalAmount, totalPrice } = trade;
+        if ((categories && categories.length <= 0) || !trade || (trade && carts.length <= 0)) {
+            return <Spin />
+        }
 
         return <div className="collate-page">
             <div className="top-bar">
-                <div className="num">共 {this.getCartsCategoryNum(carts)}种 {carts.length}件</div>
+                <div className="num">共 {this.getCartsCategoryNum(carts)}种 {totalAmount}件</div>
                 <div className="btn-add" onClick={() => {
-                    TradeUtils.renderCartEdit(categories, trade);
+                    TradeUtils.renderCartEdit(categories, trade, -1, this.loadTrade);
                 }}>+ 添加物品</div>
             </div>
 
-            <CollateCarts carts={carts} categories={categories} />
+            <CollateCarts trade={trade} categories={categories} loadTrade={this.loadTrade} />
 
             <div className="wrap">
                 <div className="title">备注</div>
-                <Input.TextArea maxLength={150} placeholder="请描述回收信息" onChange={(e) => {
+                <Input.TextArea maxLength={150} placeholder="请输入核实的物品信息" onChange={(e) => {
                     this.setState({
                         recyCancelMark: e.target.value,
                     });
@@ -144,10 +177,17 @@ export default class Collate extends React.Component {
             </div>
 
             <div className="footer">
-                <div className="total">
-                    <div className=""></div>
+                <div className="extra">
+                    <div className="item">
+                        <span>已选：</span>
+                        <span>{`${totalAmount}件`}</span>
+                    </div>
+                    <div className="price">
+                        <span>合计：</span>
+                        <span>{U.num.formatPrice(totalPrice)}</span>
+                    </div>
                 </div>
-                <div className="btn">提交订单</div>
+                <div className="btn" onClick={this.collateAndSaveTrade}>提交订单</div>
             </div>
 
         </div>

@@ -88,6 +88,11 @@
                             width: 11.6vw;
                             height: 6vw;
 
+                            &::before {
+                                width: 10.5vw;
+                                height: 5.2vw;
+                            }
+
                             &::after {
                                 top: 0.3vw;
                                 width: 5.5vw;
@@ -111,5 +116,17 @@
                 display: none;
             }
         }
+    }
+
+    .signout {
+        margin-top: 2.6vw;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 55px;
+        font-size: 16px;
+        font-weight: 500;
+        color: $primary-color;
+        background: #fff;
     }
 }

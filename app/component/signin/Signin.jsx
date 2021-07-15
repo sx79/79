@@ -110,7 +110,7 @@ export default class Signin extends React.Component {
                     </div>
                     <button className="btn-sign" onClick={() => {
                         this.signin()
-                    }}>登陆</button>
+                    }}>登录</button>
                 </div>
             </div>
         </div>;

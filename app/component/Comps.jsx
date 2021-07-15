@@ -5,13 +5,12 @@ import '../assets/css/comps.scss';
 import { Tree, Steps, Drawer, Button } from 'antd';
 import { DoubleLeftOutlined, DoubleRightOutlined } from '@ant-design/icons';
 import classnames from 'classnames';
-import { List, Radio, Toast, SwipeAction, } from 'antd-mobile';
+import { List, Radio, Toast, SwipeAction, Modal, } from 'antd-mobile';
+import TradeUtils from './trade/TradeUtils';
 
 const { Step } = Steps;
 const RadioItem = Radio.RadioItem;
-
-const { TreeNode } = Tree;
-
+const alert = Modal.alert;
 class Carts extends React.Component {
 
     static propType = {
@@ -42,10 +41,10 @@ class Carts extends React.Component {
         if (vals.length <= 1) {
             return vals;
         }
-        if (vals.length >= 2 && vals.length <= 3) {
-            value = vals.join(',');
-            return value;
-        }
+        // if (vals.length >= 2 && vals.length <= 3) {
+        //     value = vals.join(',');
+        //     return value;
+        // }
 
         value = vals.join('/');
 
@@ -150,7 +149,7 @@ class ProgressStep extends React.Component {
     render() {
         let { trade = {} } = this.props;
 
-        let { user = {}, address = {}, periods = [], status, distance } = trade;
+        let { user = {}, address = {}, visitedStartAt, visitedEndAt, status, distance } = trade;
 
         console.log(trade);
 
@@ -159,8 +158,8 @@ class ProgressStep extends React.Component {
         let { location = {}, detail } = address;
         let { poiaddress } = location;
 
-        let start = U.date.format(new Date(parseInt(periods[0])), 'yyyy-MM-dd HH:mm');
-        let end = U.date.format(new Date(parseInt(periods[1])), 'HH:mm');
+        let start = U.date.format(new Date(visitedStartAt), 'yyyy-MM-dd HH:mm');
+        let end = U.date.format(new Date(visitedEndAt), 'HH:mm');
 
         let period = start + ' - ' + end;
 
@@ -170,7 +169,7 @@ class ProgressStep extends React.Component {
                     <img src={avatar} />
                     <div className="name">{nick}</div>
                 </div>
-                {status == 2 && <div className="distance">距离您{distance / 1000}km</div>}
+                {status == 2 && <div className="distance">距离您{U.formatCurrency(distance / 1000, 2)}km</div>}
             </div>
 
             <div className="step" >
@@ -215,27 +214,32 @@ class CancelTrade extends React.Component {
         this.setState({
             checked: value,
         });
-    }
 
-    cancel = () => {
-        let { trade = {} } = this.props;
-        let { checked = 1 } = this.state;
-        let { tradeId } = trade;
 
-        let mark = CTYPE.reasionForCancellation.find(it => it.value == checked) || {};
+        alert('取消理由', '确定选择此取消理由？', [
+            { text: '取消' },
+            {
+                text: '确定', onPress: () => {
+                    let { trade = {} } = this.props;
+                    let { checked = 1 } = this.state;
+                    let { tradeId } = trade;
+                    let mark = CTYPE.reasionForCancellation.find(it => it.value == checked) || {};
+                    App.api('recy/trade/cancel', {
+                        trade: JSON.stringify({
+                            tradeId,
+                            tradeInfo: {
+                                recyCancelMark: mark.label
+                            },
+                        })
+                    }).then(() => {
+                        this.close();
+                        Toast.success("订单已取消");
+                        App.go('/trades')
+                    })
+                }
+            },
+        ])
 
-        App.api('recy/trade/cancel', {
-            trade: JSON.stringify({
-                tradeId,
-                tradeInfo: {
-                    recyCancelMark: mark.label
-                },
-            })
-        }).then(() => {
-            this.close();
-            Toast.success("订单已取消");
-            App.go('/trades')
-        })
     }
 
     render() {
@@ -245,7 +249,7 @@ class CancelTrade extends React.Component {
             visible={true}
             height="55%"
             getContainer={() => Utils.common.createModalContainer(id_div)}
-            onClose={this.cancel}
+            onClose={this.close}
             placement="bottom"
             title={<div className="title">
                 取消订单的理由
@@ -266,8 +270,17 @@ class CancelTrade extends React.Component {
 class CollateCarts extends React.Component {
 
     static propType = {
-        carts: PropTypes.array.isRequired,
+        trade: PropTypes.object.isRequired,
         categories: PropTypes.array.isRequired,
+        loadTrade: PropTypes.func.isRequired,
+    }
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            trade: this.props.trade,
+            categories: this.props.categories,
+        };
     }
 
     getCategoryName = (sequence) => {
@@ -293,8 +306,34 @@ class CollateCarts extends React.Component {
         return names;
     }
 
+    remove = (index) => {
+        let { trade = {} } = this.state;
+        alert('删除', '确定删除回收物品？', [
+            { text: '取消' },
+            {
+                text: '确定', onPress: () => {
+                    U.array.remove(trade.carts, index);
+                    trade.totalAmount = trade.carts.reduce((total = 0, item) => {
+                        let { count } = item;
+                        return total + count
+                    }, 0);
+                    trade.totalPrice = trade.carts.reduce((total = 0, item) => {
+                        let { amount } = item;
+                        return total + amount
+                    }, 0);
+                    console.log(trade);
+                    App.api('recy/trade/collate_trade', { trade: JSON.stringify(trade) }).then(() => {
+                        Toast.success("物品删除成功");
+                        this.props.loadTrade();
+                    })
+                }
+            },
+        ])
+    }
+
     render() {
-        let { carts = [] } = this.props;
+        let { trade = {}, categories = [] } = this.state;
+        let { carts = [] } = trade;
 
         return <div className="collate-carts">
             <ul className="carts-list">
@@ -309,13 +348,15 @@ class CollateCarts extends React.Component {
                             right={[
                                 {
                                     text: '删除',
-                                    onPress: () => console.log('删除'),
+                                    onPress: () => this.remove(index),
                                     style: { width: '73px', marginLeft: '10px' },
                                 }
                             ]}>
                             <div className="cart-title">
                                 <div className="name">{this.getCategoryName(sequence)}</div>
-                                <div className="delete"></div>
+                                <i className="edit" onClick={() => {
+                                    TradeUtils.renderCartEdit(categories, trade, index, this.props.loadTrade);
+                                }}></i>
                             </div>
                             <ul className="total">
                                 <li>
@@ -428,12 +469,102 @@ class CartEdit extends React.Component {
     }
 }
 
+class MySchedule extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            maxDay: this.props.maxDay,
+            schedules: this.props.schedules,
+            focusIndex: -1
+        }
+    }
+
+    static propTypes = {
+        maxDay: PropTypes.number.isRequired,
+        schedules: PropTypes.array
+    }
+
+    static defaultProps = {
+        maxDay: 7
+    }
+
+    componentDidMount() {
+        this.initDayArr();
+    }
+
+    initDayArr = () => {
+        let { maxDay, schedules = [] } = this.state;
+        let dayArr = [];
+        let weekArr = [];
+        let offset = 0 - new Date().getDay();
+        if (offset < -3) {
+            maxDay += (7 + offset);
+        } else {
+            maxDay += offset;
+        }
+        for (let i = offset; i < maxDay; i++) {
+            let now = new Date();
+            let num = i;
+            now.setDate(now.getDate() + num);
+            let week = '日一二三四五六'.charAt(now.getDay());
+            let dayStr = U.date.format(now, 'yyyy-MM-dd');
+            let sitem = (schedules.find(item => item.day === dayStr) || {});
+            dayArr.push({
+                day: now,
+                dayStr,
+                count: sitem.count
+            });
+            weekArr.length < 7 && weekArr.push(week)
+        }
+        this.setState({
+            dayArr, weekArr
+        })
+    }
+
+    render() {
+        let { dayArr = [], weekArr = [], focusIndex } = this.state;
+
+        let now = new Date();
+
+        return <div className='my-schedule'>
+            <div className='inner'>
+                <div className='month'>{U.date.format(new Date(), 'yyyy-MM')}</div>
+
+                <ul className='ul-week'>
+                    {weekArr.map((w, i) => {
+                        return <li key={i}>{w}</li>
+                    })}
+                </ul>
+
+                <ul className='ul-day'>
+                    {dayArr.map((item, i) => {
+                        let { day, dayStr, count } = item;
+                        let isToday = U.date.format(now, 'dd') == U.date.format(day, 'dd');
+                        let sameMonth = U.date.format(now, 'MM') == U.date.format(day, 'MM');
+                        let disabled = now.getDate() > day.getDate() && now.getMonth() >= day.getMonth();
+                        return <li key={i} onClick={() => {
+                            !disabled && this.setState({ focusIndex: i });
+                        }}>
+                            <div className={classnames('num', { 'same-month': sameMonth }, { 'today': isToday }, { 'disabled': disabled }, { 'active': focusIndex == i })}>{U.date.format(day, "dd")}</div>
+                            {count > 0 && <span className='badge'>{count}</span>}
+                        </li>
+                    })}
+
+                    <div className='clear' />
+                </ul>
+
+            </div>
+        </div>
+    }
+}
+
 export {
     Carts,
     ProgressStep,
     CancelTrade,
     CollateCarts,
     CartEdit,
+    MySchedule
     // TitleBar,
     // Banners,
     // NavBar,

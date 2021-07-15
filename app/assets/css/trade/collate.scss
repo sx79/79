@@ -176,9 +176,31 @@
         height: 55px;
         background: #fff;
 
-        .total {
+        .extra {
             flex: 1;
+
+            .item {
+                span {
+                    font-size: 12px;
+
+                    &:last-child {
+                        font-weight: 500;
+                        color: $primary-color;
+                    }
+                }
+            }
+
+            .price {
+                span {
+                    font-size: 15px;
+
+                    &:last-child {
+                        color: $primary-color;
+                    }
+                }
+            }
         }
+
 
         .btn {
             flex: 0 0 41.6vw;

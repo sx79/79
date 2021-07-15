@@ -3,8 +3,10 @@ import '../../assets/css/trade/trade.scss';
 import { App, CTYPE, U, Utils, OSSWrap } from '../../common';
 import { Carts, ProgressStep, CancelTrade } from '../Comps';
 import classnames from 'classnames';
+import { message, Spin } from 'antd';
+import copy from 'copy-to-clipboard'
 
-import { Modal } from 'antd-mobile';
+import { Modal, Toast } from 'antd-mobile';
 const alert = Modal.alert;
 
 
@@ -26,7 +28,9 @@ export default class Trade extends React.Component {
 
     loadTrade = () => {
         let { tradeId } = this.state;
-        App.api('recy/trade/trade', { tradeId }).then(trade => {
+        App.api('recy/trade/trade', {
+            tradeId,
+        }).then(trade => {
             this.setState({ trade });
         });
     }
@@ -37,12 +41,6 @@ export default class Trade extends React.Component {
         });
     }
 
-    // remove = (tradeId) => {
-    //     App.api('usr/trade/remove', { tradeId }).then(() => {
-    //         App.go('/trades');
-    //     });
-    // }
-
     cancelTrade = () => {
         let { trade = {} } = this.state;
         Utils.common.renderReactDOM(<CancelTrade trade={trade} />)
@@ -52,8 +50,17 @@ export default class Trade extends React.Component {
     render() {
         let { trade = {}, categories = [] } = this.state;
 
-        let { tradeId, status, updatedAt, totalAmount, totalPrice, createdAt, remark, imgs = [], periods = [], carts = [], address = {} } = trade;
+        if (!trade.id) {
+            return <Spin />
+        }
+        let { completedAt, tradeId, status, updatedAt, totalAmount, totalPrice, createdAt, remark, imgs = [], visitedStartAt, visitedEndAt, carts = [], address = {}, tradeInfo = {} } = trade;
+        let { canceledAt } = tradeInfo;
         let { name, mobile, detail, location = {} } = address;
+
+        let pictures = [];
+        imgs.map((item) => {
+            pictures.push(item);
+        });
 
         let price = U.num.formatPrice(totalPrice);
 
@@ -63,22 +70,22 @@ export default class Trade extends React.Component {
             let codes = Utils.addr.getPCD(code) || '';
             str = codes.replace(/\s*/g, '');
         }
-        let start = U.date.format(new Date(parseInt(periods[0])), 'yyyy-MM-dd HH:mm');
-        let end = U.date.format(new Date(parseInt(periods[1])), 'HH:mm');
+        let start = U.date.format(new Date(visitedStartAt), 'yyyy-MM-dd HH:mm');
+        let end = U.date.format(new Date(visitedEndAt), 'HH:mm');
         let period = start + ' - ' + end;
-        let statusTxt = status == 2 ? '待上门' : '已完成';
+        let statusTxt = status == 2 ? '待上门' : status == 3 ? '已完成' : '已取消';
 
-        return <div className="trade-page">
+        return <div className="trade-page" style={{ paddingBottom: `${status == 4 && '20px'}` }}>
             <div className="top-bar">
                 <div className="trade-id">订单：{tradeId}</div>
-                <div className={classnames('status', { 'success': status == 3 })}>{statusTxt}</div>
+                <div className={classnames('status', { 'success': status >= 3 })}>{statusTxt}</div>
             </div>
 
             <ProgressStep trade={trade} />
 
             <div className={`carts-comp ${status == 3 ? 'trade-finish' : ''}`}>
                 <div className="title"> 物品信息 </div>
-                <Carts trade={trade} categories={categories} isFinish={status == 3} />
+                <Carts trade={trade} categories={categories} isFinish={status >= 3} />
             </div>
 
             <div className={`trade ${status == 3 ? 'trade-finish' : ''}`}>
@@ -108,7 +115,7 @@ export default class Trade extends React.Component {
                         <div className="label">图片信息：</div>
                         <div className="control">
                             {imgs.map((img, index) => {
-                                return <img key={index} src={img} />
+                                return <img key={index} src={img} onClick={() => Utils.common.showImgLightbox(pictures, index)} />
                             })}
                         </div>
                     </li>
@@ -119,7 +126,10 @@ export default class Trade extends React.Component {
                 <ul className="content">
                     <li>
                         <div className="label">订单编号：</div>
-                        <div className="control">{tradeId}<div className="copy">复制</div></div>
+                        <div className="control">{tradeId}<div className="copy" onClick={() => {
+                            copy(tradeId);
+                            message.success('复制成功')
+                        }}>复制</div></div>
                     </li>
                     <li>
                         <div className="label">下单时间：</div>
@@ -131,12 +141,16 @@ export default class Trade extends React.Component {
                     </li>}
                     {status == 3 && <li>
                         <div className="label">完成时间：</div>
-                        <div className="control">{U.date.format(new Date(updatedAt), 'yyyy-MM-dd HH:mm')}</div>
+                        <div className="control">{completedAt ? U.date.format(new Date(completedAt), 'yyyy-MM-dd HH:mm') : U.date.format(new Date(new Date().getTime()), 'yyyy-MM-dd HH:mm')}</div>
+                    </li>}
+                    {status == 4 && <li>
+                        <div className="label">取消时间：</div>
+                        <div className="control">{canceledAt ? U.date.format(new Date(canceledAt), 'yyyy-MM-dd HH:mm') : '暂无'}</div>
                     </li>}
                 </ul>
             </div>
 
-            <div className="btn-wrap">
+            {status != 4 && <div className="btn-wrap">
                 {status == 2 && <div className="btn">
                     <div className="btn-common contact">联系客户</div>
                     <div className="btn-common cancel" onClick={this.cancelTrade}>取消订单</div>
@@ -152,7 +166,7 @@ export default class Trade extends React.Component {
                         <div className="total-value">¥ {U.formatCurrency(price, 2)}</div>
                     </div>
                 </div>}
-            </div>
+            </div>}
         </div>
     }
 }

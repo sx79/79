@@ -2,7 +2,8 @@ import React from 'react';
 import { App, CTYPE, U, Utils, OSSWrap } from '../../common';
 import '../../assets/css/trade/trades.scss';
 import classnames from 'classnames';
-import { Empty, message } from 'antd';
+import Tloader from "../common/react-touch-loader";
+import { Empty, Spin } from 'antd';
 
 
 export default class Trades extends React.Component {
@@ -11,6 +12,12 @@ export default class Trades extends React.Component {
         super(props);
         this.state = {
             activeIndex: 2,
+            pagination: {
+                pageSize: 3,
+                current: 1,
+                total: 0
+            },
+            trades: [],
         }
     }
 
@@ -27,44 +34,51 @@ export default class Trades extends React.Component {
         });
     }
 
+    getQuery = (pagination = {}) => {
+        let { sorter = {}, status, activeIndex } = this.state;
+        let { sortFiled = 'id', sortAscDesc = 'desc' } = sorter;
+
+        let param = {};
+        param['tradeQo'] = JSON.stringify({
+            sortPropertyName: sortFiled,
+            sortAscending: sortAscDesc === 'asc',
+            pageNumber: pagination.current,
+            pageSize: pagination.pageSize,
+            status: activeIndex,
+            lat: 34.602837, lng: 113.726738
+        });
+        return param;
+    };
+
     loadTrades = () => {
-        let { pagination = {}, status } = this.state;
+        let { pagination = {}, activeIndex } = this.state;
+        console.log(activeIndex);
         App.api("/recy/trade/trades", {
-            tradeQo: JSON.stringify({
-                pageSize: pagination.pageSize,
-                pageNumber: pagination.current,
-                status,
-                lat: 34.602837, lng: 113.726738
-            })
+            ...this.getQuery(pagination),
         }).then((result) => {
             console.log(result);
-            let { trades = [] } = result;
+            let { page = {}, trades = [] } = result;
             this.setState({
-                trades: trades,
+                trades: result.trades,
                 pagination,
                 initializing: 2,
-                last: result.last,
+                last: page.last,
             });
         });
     };
 
     loadMore = (resolve) => {
-        let { pagination = {}, status } = this.state;
+        let { pagination = {}, activeIndex } = this.state;
         pagination.current = pagination.current + 1;
         App.api('/recy/trade/trades', {
-            tradeQo: JSON.stringify({
-                pageNumber: pagination.current,
-                pageSize: pagination.pageSize,
-                status,
-                lat: 34.602837, lng: 113.726738
-            })
+            ...this.getQuery(pagination),
         }).then(result => {
-            let { trades = [] } = result;
+            let { trades = [], page = {} } = result;
             this.setState((prevState) => ({
                 trades: prevState.trades.concat(trades),
                 pagination,
                 initializing: 2,
-                last: result.last
+                last: page.last
             }));
         });
         resolve && resolve();
@@ -75,6 +89,7 @@ export default class Trades extends React.Component {
         this.setState({ pagination: { ...pagination, current: 1 } }, () => this.loadTrades());
         resolve && resolve();
     };
+
 
     getCartsCategoryNames = (carts = []) => {
         let { categories = [] } = this.state;
@@ -111,37 +126,52 @@ export default class Trades extends React.Component {
     }
 
     tabClick = (v) => {
-        let { allTrades = [] } = this.state;
         this.setState({
             activeIndex: parseInt(v),
-            trades: allTrades.filter(it => it.status == v)
+            trades: [],
+            pagination: {
+                pageSize: 3,
+                current: 1,
+                total: 0
+            },
+            initializing: 2,
+        }, () => {
+            this.loadTrades();
         });
     }
-
     go = (tradeId) => {
         App.go(`/trade/${tradeId}`);
     }
 
     render() {
-        let { activeIndex = 1, trades = [] } = this.state;
+        let { activeIndex = 2, trades = [], initializing, last } = this.state;
+
+        let length = trades.length;
+
+        if (length <= 0) {
+            return <Spin />
+        }
 
         let _trades = trades.sort((a, b) => {
-            return parseInt(a.periods[0]) - parseInt(b.periods[0]);
+            return parseInt(a.visitedStartAt) - parseInt(b.visitedStartAt);
         });
 
         _trades.sort((a, b) => {
             return a.distance - b.distance;
         });
 
+
+
         return <div className="trades-page">
             <ul className="tabs">
                 <li className={classnames({ 'active': activeIndex == 2 })} onClick={() => this.tabClick(2)}>待上门</li>
                 <li className={classnames({ 'active': activeIndex == 3 })} onClick={() => this.tabClick(3)}>已完成</li>
+                <li className={classnames({ 'active': activeIndex == 4 })} onClick={() => this.tabClick(4)}>已取消</li>
             </ul>
             {_trades.length <= 0 && <Empty description="暂无订单" image={<img src={require('../../assets/image/grab/bg_not_trade.png')} />} />}
             <ul className="trades">
                 {_trades.map((trade, index) => {
-                    let { tradeId, status, createdAt, address = {}, periods = [], carts = [], totalPrice = 0, distance } = trade;
+                    let { tradeId, status, createdAt, address = {}, visitedStartAt, visitedEndAt, carts = [], totalPrice = 0, distance } = trade;
                     let { name, mobile, detail, location = {} } = address;
                     let { code } = location;
                     let codes = Utils.addr.getPCD(code);
@@ -150,12 +180,12 @@ export default class Trades extends React.Component {
                         str = codes.replace(/\s*/g, '');
                     }
 
-                    let start = U.date.format(new Date(parseInt(periods[0])), 'yyyy-MM-dd HH:mm');
-                    let end = U.date.format(new Date(parseInt(periods[1])), 'HH:mm');
+                    let start = U.date.format(new Date(visitedStartAt), 'yyyy-MM-dd HH:mm');
+                    let end = U.date.format(new Date(visitedEndAt), 'HH:mm');
 
                     let period = start + ' - ' + end;
 
-                    let isFinish = status == 3;
+                    let isFinish = status >= 3;
 
                     return <li key={index} onClick={() => this.go(tradeId)}>
                         <div className="title" onClick={() => this.go(tradeId)}>
@@ -194,6 +224,12 @@ export default class Trades extends React.Component {
                     </li>
                 })}
             </ul>
+            {length >= 3 && <Tloader
+                className="main"
+                autoLoadMore
+                onRefresh={this.refresh} onLoadMore={this.loadMore} hasMore={!last}
+                initializing={initializing}>
+            </Tloader>}
         </div>
     }
 }

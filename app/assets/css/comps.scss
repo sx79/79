@@ -92,11 +92,6 @@
                 border-radius: 1vw;
                 background: $bg-grey;
 
-
-                .start {}
-
-                .end {}
-
                 .quote-items {
                     padding: 3vw 2.2vw 2.2vw;
 
@@ -508,11 +503,12 @@
                             color: #555555;
                         }
 
-                        .delete {
+                        .edit {
                             flex: 0 0 3.5vw;
+                            display: block;
                             width: 3.5vw;
                             height: 3.5vw;
-                            background: url('../image/trade/icon_delete.png') center no-repeat;
+                            background: url('../image/common/icon_edit.png') center no-repeat;
                             background-size: contain;
                         }
                     }
@@ -567,178 +563,117 @@
     }
 }
 
-// #div-drawer-cart-edit {
-//     .ant-drawer-content {
-//         border-radius: 3.2vw 3.2vw 0 0;
 
-//         .ant-drawer-body {
-//             padding: 0 !important;
-//         }
-//     }
+.my-schedule {
+    width: 100%;
 
+    .inner {
+        background: #fff;
+        border-radius: 6px;
+        padding: 5px 20px 15px;
 
-//     .ant-drawer-title {
-//         .title {
-//             position: relative;
-//             width: 100% !important;
-//             font-size: 16px;
-//             font-weight: 500;
-//             text-align: center;
-//             color: #000000;
-//             width: 192px;
+        .top {
+            display: flex;
+            height: 25px;
+            line-height: 25px;
 
-//             .cancel {
-//                 position: absolute;
-//                 right: 10px;
-//                 bottom: -3px;
-//                 font-size: 12px;
-//                 color: #b0b0b0;
-//             }
-//         }
-//     }
+            .title {
+                flex: 1;
+                text-align: left;
+                font-size: 15px;
+                font-weight: 500;
+                color: #333333;
+            }
 
-//     .wrap {
-//         padding: 0 4vw 16vw 4vw;
-//         height: 100%;
-//         overflow-y: scroll;
+            .more {
+                flex: 0 0 80px;
+                font-size: 12px;
+                color: #9a9a9a;
+                text-align: right;
+            }
+        }
 
-//         .ant-tree-list-holder-inner {
-//             .ant-tree-treenode-selected {
-//                 width: 100%;
+        .month {
+            font-family: DINAlternate, DINAlternate-Bold;
+            font-size: 16px;
+            color: #9a9a9a;
+            font-weight: 700;
+        }
 
-//                 .ant-tree-node-selected {
-//                     background: transparent;
-//                 }
-//             }
+        .ul-week {
+            margin-top: 10px;
+            height: 30px;
+            line-height: 30px;
+            column-count: 7;
+            column-gap: 1px;
 
-//             .ant-tree-treenode-switcher-close {
-//                 width: 100%;
-//             }
+            li {
+                text-align: center;
+                color: #9a9a9a;
+                font-size: 12px;
+            }
+        }
 
-//             .ant-tree-treenode-leaf-last {
-//                 width: 100%;
-//             }
+        .ul-day {
+            margin-top: 10px;
 
+            li {
+                float: left;
+                width: 14.28%;
+                height: 40px;
+                position: relative;
+                display: flex;
 
-//             .ant-tree-treenode {
-//                 position: relative;
-//                 display: flex;
-//                 align-items: center;
-//                 width: 100%;
-//                 height: 40px;
+                .num {
+                    margin: auto;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 26px;
+                    height: 26px;
+                    font-size: 20px;
+                    font-weight: 500;
+                    color: #555555;
+                }
 
-//                 .ant-tree-switcher {
-//                     display: flex;
-//                     align-items: center;
-//                     width: 12px;
+                .same-month {
+                    color: #555;
+                }
 
-//                     .anticon {
-//                         svg {
-//                             width: 9px;
-//                             height: 9px;
+                .today {
+                    color: #c4381b;
+                }
 
-//                             path {
-//                                 color: #9a9a9a;
-//                             }
-//                         }
-//                     }
-//                 }
+                .disabled {
+                    color: #9a9a9a;
+                }
 
-//                 .ant-tree-node-content-wrapper {
-//                     width: 100%;
+                .active {
+                    background: $primary-color;
+                    color: #fff;
+                    border-radius: 3px;
+                }
 
-//                     .ant-tree-title {
-//                         display: block;
-//                         width: 100% !important;
-//                         font-size: 14px;
+                .badge {
+                    position: absolute;
+                    top: -8px;
+                    right: -10px;
+                    display: inline-block;
+                    background: #06ba61;
+                    border-radius: 9px 9px 9px 0;
+                    height: 18px;
+                    min-width: 20px;
+                    text-align: center;
+                    line-height: 18px;
+                    color: #fff;
+                    font-size: 12px;
+                }
 
-//                         .am-list-item {
-//                             padding: 0;
-//                             padding-right: 8px;
-//                             width: 100%;
-//                             min-height: 40px;
-//                             background: transparent;
-
-//                             .am-list-line {
-//                                 padding: 0;
-
-//                                 .am-list-content {
-//                                     width: 155px;
-//                                     font-size: 14px;
-//                                     font-weight: 400;
-//                                     text-align: left;
-//                                     color: $font-dark;
-//                                 }
-
-//                                 .am-list-extra {
-//                                     flex: 0 0 18px;
-
-//                                     .am-radio-wrapper {
-
-//                                         .am-radio {
-//                                             width: 18px;
-//                                             height: 18px;
-//                                             background: #ffffff;
-//                                             border: 1px solid #d8d8d8;
-//                                             border-radius: 50%;
-//                                         }
-
-//                                         .am-radio-checked {
-//                                             background: #009aa8;
-//                                             border: 1px solid #009aa8;
-//                                             border-radius: 50%;
-
-//                                             .am-radio-inner {
-//                                                 &::after {
-//                                                     border-color: #fff;
-//                                                     top: 0.5px;
-//                                                     right: 5px;
-//                                                     width: 6px;
-//                                                     height: 10px;
-//                                                 }
-//                                             }
-//                                         }
-//                                     }
-//                                 }
-//                             }
-//                         }
-//                     }
-
-//                     &:hover {
-//                         background: transparent;
-//                     }
-//                 }
+            }
 
 
+        }
 
-//                 &::after {
-//                     position: absolute;
-//                     left: -50%;
-//                     bottom: 0;
-//                     display: block;
-//                     content: '';
-//                     width: 200%;
-//                     height: 1px;
-//                     background: #dfdfdf;
-//                     transform: scale(.5);
-//                 }
-//             }
-//         }
-//     }
 
-//     .btn {
-//         position: fixed;
-//         bottom: 0;
-//         padding: 2vw 4vw 5vw;
-//         width: 100%;
-//         background: #fff;
-
-//         .ant-btn-primary {
-//             width: 100%;
-//             height: 35px;
-//             border: none;
-//             border-radius: 4vw;
-//             background: $primary-color;
-//         }
-//     }
-// }
+    }
+}

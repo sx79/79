@@ -5,6 +5,13 @@
 .trade-page {
     padding-bottom: 15vw;
 
+    .ant-spin-nested-loading {
+        .ant-spin {
+            max-height: 100vh;
+        }
+    }
+
+
     .top-bar {
         margin-bottom: 2.66vw;
         padding: 0 4vw;

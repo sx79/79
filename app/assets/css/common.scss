@@ -7,7 +7,8 @@
   font-size: 13px;
 }
 
-html, body {
+html,
+body {
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -34,31 +35,47 @@ strong {
   font-size: inherit;
 }
 
-em, i {
+em,
+i {
   font-style: normal;
 }
 
-ol, ul, li {
+ol,
+ul,
+li {
   list-style: none;
 }
 
-p, ul, li, ol {
+p,
+ul,
+li,
+ol {
   margin-top: 0;
   margin-bottom: 0;
 }
 
-a, button, input, li {
+a,
+button,
+input,
+li {
   -webkit-tap-highlight-color: rgba(255, 0, 0, 0);
 }
 
-input, textarea {
+input,
+textarea {
   -webkit-appearance: none;
   resize: none;
   border: none;
   border-radius: 0;
 }
 
-a:focus, input:focus, img:focus, button:focus, textarea:focus, select:focus, li:focus {
+a:focus,
+input:focus,
+img:focus,
+button:focus,
+textarea:focus,
+select:focus,
+li:focus {
   outline: none;
 }
 
@@ -115,7 +132,8 @@ a:focus, input:focus, img:focus, button:focus, textarea:focus, select:focus, li:
 }
 
 //长按不出现放大镜效果
-button, input[type='button'] {
+button,
+input[type='button'] {
   border: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
@@ -165,7 +183,10 @@ button, input[type='button'] {
     line-height: 1.5;
   }
 
-  p, img, table, video {
+  p,
+  img,
+  table,
+  video {
     max-width: 100% !important;
     height: auto;
   }
@@ -222,5 +243,11 @@ button, input[type='button'] {
   animation-delay: -.8s;
 }
 
+.ant-spin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
 
-
+}
