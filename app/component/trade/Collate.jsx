@@ -29,7 +29,7 @@ export default class Collate extends React.Component {
     loadTrade = () => {
         let { tradeId } = this.state;
         App.api('recy/trade/trade', { tradeId }).then(trade => {
-            this.setState({ trade });
+            this.setState({ trade, isNoRepeat: false });
         });
     }
 
@@ -89,7 +89,10 @@ export default class Collate extends React.Component {
     };
 
     collateAndSaveTrade = () => {
-        let { trade = {}, recyCancelMark } = this.state;
+        let { trade = {}, recyCancelMark, isNoRepeat = false } = this.state;
+        if (isNoRepeat) {
+            return;
+        }
         let { carts = [], imgs = [], tradeInfo = {} } = trade;
         if (carts.length < 1) {
             Toast.fail("请核实回收物品是否存在");
@@ -113,6 +116,7 @@ export default class Collate extends React.Component {
                 }
             })
         }).then(() => {
+            this.setState({ isNoRepeat: true });
             Toast.success("订单已完成");
             App.go('/trades');
         });

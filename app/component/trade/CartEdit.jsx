@@ -26,7 +26,6 @@ export default class CartEdit extends React.Component {
     componentDidMount() {
         let { cartIndex, trade = {} } = this.state;
         let { carts = [] } = trade;
-        console.log(cartIndex);
         if (cartIndex > -1) {
             this.setState({ cart: carts[cartIndex] });
         }
@@ -39,7 +38,7 @@ export default class CartEdit extends React.Component {
     calc = () => {
         let { cart = {}, } = this.state;
         let { quote = {}, count = 1 } = cart;
-        let { quotationItem = [], maxPrice, minPrice } = quote;
+        let { quotationItem = [], maxPrice = 0, minPrice = 0 } = quote;
 
         let amount = maxPrice;
 
@@ -69,9 +68,10 @@ export default class CartEdit extends React.Component {
     };
 
     onSave = () => {
-        let { trade = {}, cartIndex, cart = {} } = this.state;
-        console.log(cartIndex);
-        console.log(cart);
+        let { trade = {}, cartIndex, cart = {}, isNoRepeat = false } = this.state;
+        if (isNoRepeat) {
+            return;
+        }
         let { carts = [] } = trade;
         if (cartIndex < 0) {
             carts.push(cart);
@@ -88,6 +88,7 @@ export default class CartEdit extends React.Component {
         }, 0);
         console.log(trade);
         App.api('recy/trade/collate_trade', { trade: JSON.stringify(trade) }).then(() => {
+            this.setState({ isNoRepeat: true });
             Toast.success("物品添加成功");
             this.close();
             this.props.loadTrade();
@@ -96,7 +97,6 @@ export default class CartEdit extends React.Component {
 
     render() {
         let { categories = [], trade = {}, cart = {} } = this.state;
-        console.log(cart);
 
         categories.sort((a, b) => {
             return a.sequence.localeCompare(b.sequence);
@@ -109,9 +109,6 @@ export default class CartEdit extends React.Component {
         let second = firstChildren.find(it => it.sequence.substr(0, 4) === sequence.substr(0, 4)) || {};
         let secondChildren = second.children || [];
         let third = secondChildren.find(it => it.sequence == sequence) || {};
-
-        console.log(cart);
-
         return <Drawer
             visible={true}
             height="75%"
@@ -163,6 +160,8 @@ export default class CartEdit extends React.Component {
                         extra={third.name ? third.name : '请选择'}>
                         <ul className="category">
                             {secondChildren.map((thirdItem, index) => {
+                                let { quotation = {} } = thirdItem;
+                                let { maxPrice = 0 } = quotation;
                                 return <li key={index} className={classnames({ 'active': sequence === thirdItem.sequence })}
                                     onClick={() => {
                                         quotationItem.map((it => {
@@ -170,7 +169,7 @@ export default class CartEdit extends React.Component {
                                                 it.values = [];
                                             }
                                         }));
-                                        this.setState({ cart: { sequence: thirdItem.sequence, count: 1, amount: thirdItem.quotation.maxPrice, quote: { ...thirdItem.quotation } } }, this.calc)
+                                        this.setState({ cart: { sequence: thirdItem.sequence, count: 1, amount: maxPrice, quote: { ...thirdItem.quotation } } }, this.calc)
                                     }}>
                                     {thirdItem.name}
                                 </li>

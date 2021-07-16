@@ -629,9 +629,9 @@
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    width: 26px;
-                    height: 26px;
-                    font-size: 20px;
+                    width: 24px;
+                    height: 24px;
+                    font-size: 16px;
                     font-weight: 500;
                     color: #555555;
                 }
@@ -656,13 +656,13 @@
 
                 .badge {
                     position: absolute;
-                    top: -8px;
+                    top: 2px;
                     right: -10px;
                     display: inline-block;
-                    background: #06ba61;
+                    background: $primary-color;
                     border-radius: 9px 9px 9px 0;
-                    height: 18px;
-                    min-width: 20px;
+                    height: 16px;
+                    min-width: 18px;
                     text-align: center;
                     line-height: 18px;
                     color: #fff;

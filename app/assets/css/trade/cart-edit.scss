@@ -188,6 +188,8 @@
                 }
 
                 span {
+                    overflow: hidden;
+
                     &:last-child {
                         position: absolute;
                         z-index: 2;
@@ -234,6 +236,8 @@
                 }
 
                 span {
+                    overflow: hidden;
+
                     &:last-child {
                         color: $primary-color;
                     }

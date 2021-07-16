@@ -508,11 +508,12 @@ class MySchedule extends React.Component {
             now.setDate(now.getDate() + num);
             let week = '日一二三四五六'.charAt(now.getDay());
             let dayStr = U.date.format(now, 'yyyy-MM-dd');
-            let sitem = (schedules.find(item => item.day === dayStr) || {});
+            let sitem = (schedules.find(item => item[1] === dayStr) || {});
+            console.log(sitem);
             dayArr.push({
                 day: now,
                 dayStr,
-                count: sitem.count
+                count: sitem[0]
             });
             weekArr.length < 7 && weekArr.push(week)
         }

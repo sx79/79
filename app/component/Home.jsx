@@ -32,14 +32,14 @@ export default class Home extends React.Component {
 
     loadStatistics = () => {
         App.api('recy/recycler/statistics').then(result => {
-            console.log(result);
-            // this.setState({ statistics: result })
+            this.setState({ statistics: result })
         });
     }
 
     loadSchedule = () => {
-        App.api('recy/trade/schedule').then((result) => {
-            this.setState({ schedules: result.schedules, scheduleLoaded: true });
+        App.api('recy/trade/schedule').then((schedules) => {
+
+            this.setState({ schedules, scheduleLoaded: true });
         });
     };
 
