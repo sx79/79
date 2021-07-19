@@ -1,8 +1,9 @@
 import React from 'react';
 import '../assets/css/profile.scss';
 import { App, CTYPE, U, Utils } from "../common";
-import { List, Switch, Toast } from 'antd-mobile';
+import { List, Switch, Toast, Badge } from 'antd-mobile';
 import { Modal, message } from 'antd';
+import { MessageOutlined } from '@ant-design/icons';
 
 const Item = List.Item;
 export default class Profile extends React.Component {
@@ -27,36 +28,43 @@ export default class Profile extends React.Component {
         });
     }
 
-    work = (id, workStatus) => {
-        let _workStatus = workStatus === 1 ? 2 : 1;
-        let tip = workStatus == 1 ? '下班' : '上班';
-        App.api('/recy/recycler/work', { id, workStatus: _workStatus }).then((recycler) => {
+    work = (id, rest) => {
+        let _rest = rest === 1 ? 2 : 1;
+        let tip = rest === 1 ? '下班' : '上班';
+        App.api('/recy/recycler/work', { id, rest: _rest }).then((recycler) => {
             this.setState({ recycler }, this.loadProfile());
             message.success(`已设置${tip}状态`);
         });
     }
 
-
     render() {
-        let { recycler = {}, work = 1 } = this.state;
-        let { name, mobile, recyclerNumber, workStatus, avatar } = recycler
+        let { recycler = {}, } = this.state;
+        let { name, mobile, jobNumber, rest, verify = {} } = recycler
+        let { jobProve } = verify;
+        console.log(recycler)
         return <div className='profile-page'>
             <div className="top">
-                <img src={avatar} />
+                <img src={jobProve} />
                 <div className="name">{name}</div>
-                <div className="number">ID：{recyclerNumber}</div>
+                <div className="number">ID：{jobNumber}</div>
             </div>
             <List>
                 <Item
-                    extra={<Switch checked={workStatus == 1 ? true : false} onChange={(checked) => {
-                        this.work(recycler.id, workStatus)
+                    extra={<Switch checked={rest == 1 ? true : false} onChange={(checked) => {
+                        this.work(recycler.id, rest)
                     }} />}>
                     <i className="work" />
-                    工作状态：{workStatus == 1 ? '上班' : '下班'}
+                    工作状态：{rest == 1 ? '上班' : '下班'}
                 </Item>
                 <Item arrow="horizontal" onClick={() => App.go('/trades')}>
                     <i className="trade" />
                     我的订单
+                </Item>
+                <Item onClick={() => App.go('/message')}
+                    extra={<Badge text={22} overflowCount={99} />}
+                    arrow="horizontal">
+                    <i className="msg" />
+                    我的消息
                 </Item>
                 <Item
                     extra={U.str.formatMobile(mobile)}

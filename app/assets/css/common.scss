@@ -249,5 +249,17 @@ input[type='button'] {
   justify-content: center;
   width: 100vw;
   height: 100vh;
+}
 
+.map-inner,
+.map-container {
+  div {
+
+    .tmap-scale-control,
+    .rotate-circle,
+    .logo-text,
+    img {
+      display: none !important;
+    }
+  }
 }

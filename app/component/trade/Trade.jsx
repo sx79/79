@@ -3,12 +3,14 @@ import '../../assets/css/trade/trade.scss';
 import { App, CTYPE, U, Utils, OSSWrap } from '../../common';
 import { Carts, ProgressStep, CancelTrade } from '../Comps';
 import classnames from 'classnames';
-import { message, Spin } from 'antd';
-import copy from 'copy-to-clipboard'
+import { message, Spin, Steps } from 'antd';
+import copy from 'copy-to-clipboard';
+import TradeUtils from './TradeUtils';
+import WechatTools from '../../common/WechatTools';
 
 import { Modal, Toast } from 'antd-mobile';
 const alert = Modal.alert;
-
+const { Step } = Steps;
 
 export default class Trade extends React.Component {
     constructor(props) {
@@ -21,19 +23,23 @@ export default class Trade extends React.Component {
 
     componentDidMount() {
         U.setWXTitle('订单详情');
-        this.loadTrade();
+        // this.loadTrade();
         this.loadCategories();
         Utils.addr.loadRegion(this);
+        U.setWXTitle("订单详情");
+        let { tradeId = 0 } = this.state;
+        TradeUtils.loadTrade(tradeId, this, this.onTradeLoaded);
     }
 
-    loadTrade = () => {
-        let { tradeId } = this.state;
-        App.api('recy/trade/trade', {
-            tradeId,
-        }).then(trade => {
-            this.setState({ trade });
-        });
-    }
+
+    // loadTrade = () => {
+    //     let { tradeId } = this.state;
+    //     App.api('recy/trade/trade', {
+    //         tradeId,
+    //     }).then(trade => {
+    //         this.setState({ trade });
+    //     });
+    // }
 
     loadCategories = () => {
         App.api('recy/category/categories').then(categories => {
@@ -46,6 +52,43 @@ export default class Trade extends React.Component {
         Utils.common.renderReactDOM(<CancelTrade trade={trade} />)
     }
 
+    onTradeLoaded = () => {
+        this.initMap();
+    };
+
+    initMap = () => {
+        let { trade = {} } = this.state;
+        let { address = {}, user = {} } = trade;
+        let { location = {} } = address;
+        let { lat, lng } = location;
+
+        document.getElementById('map_container').innerHTML = "";
+
+        let center = new TMap.LatLng(lat, lng);
+        let map = new TMap.Map("map_container", { center, zoom: 16 });
+        map.removeControl(TMap.constants.DEFAULT_CONTROL_ID.ZOOM);
+
+        new TMap.MultiMarker({
+            id: "marker-layer",
+            map,
+            // styles: {
+            //     "marker": new TMap.MarkerStyle({
+            //         "width": 30,
+            //         "height": 30,
+            //         "src": user.avatar
+            //     })
+            // },
+            geometries: [{
+                "id": "demo",
+                "styleId": "marker",
+                "position": center,
+                "properties": {
+                    "title": user.nick
+                }
+            }]
+        });
+    };
+
 
     render() {
         let { trade = {}, categories = [] } = this.state;
@@ -53,9 +96,10 @@ export default class Trade extends React.Component {
         if (!trade.id) {
             return <Spin />
         }
-        let { completedAt, tradeId, status, updatedAt, totalAmount, totalPrice, createdAt, remark, imgs = [], visitedStartAt, visitedEndAt, carts = [], address = {}, tradeInfo = {} } = trade;
+        let { user = {}, distance, completedAt, tradeId, status, updatedAt, totalAmount, totalPrice, createdAt, remark, imgs = [], visitedStartAt, visitedEndAt, carts = [], address = {}, tradeInfo = {} } = trade;
         let { canceledAt } = tradeInfo;
-        let { name, mobile, detail, location = {} } = address;
+        let { name, mobile, detail, location = {}, } = address;
+        let { poiaddress } = location;
 
         let pictures = [];
         imgs.map((item) => {
@@ -81,7 +125,33 @@ export default class Trade extends React.Component {
                 <div className={classnames('status', { 'success': status >= 3 })}>{statusTxt}</div>
             </div>
 
-            <ProgressStep trade={trade} />
+            {/* <ProgressStep trade={trade} onTradeLoaded={this.onTradeLoaded} /> */}
+            <div className={`progress-step ${status == 3 ? 'progress-step-finish' : ''}`}>
+                <div className="title-user">
+                    <div className="user">
+                        <img src={user.avatar} />
+                        <div className="name">{user.nick}</div>
+                    </div>
+                    {status == 2 && <div className="distance">距离您{U.formatCurrency(distance / 1000, 2)}km</div>}
+                </div>
+
+                <div className="step" >
+                    <Steps size="small"
+                        direction="vertical"
+                        current={1}>
+                        <Step
+                            icon={<i className="icon address" />}
+                            title={poiaddress + detail} />
+                        <Step
+                            icon={<i className="icon time" />}
+                            title={period} />
+                    </Steps>
+                    <div className="map">
+                        <div className="map-inner" id="map_container"></div>
+                        {/* <div className="btn" onClick={() => WechatTools.openLocation(address)}>地图导航</div> */}
+                    </div>
+                </div>
+            </div>
 
             <div className={`carts-comp ${status == 3 ? 'trade-finish' : ''}`}>
                 <div className="title"> 物品信息 </div>
@@ -128,7 +198,7 @@ export default class Trade extends React.Component {
                         <div className="label">订单编号：</div>
                         <div className="control">{tradeId}<div className="copy" onClick={() => {
                             copy(tradeId);
-                            message.success('复制成功')
+                            message.success('已复制到剪切面板')
                         }}>复制</div></div>
                     </li>
                     <li>

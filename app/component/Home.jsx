@@ -5,6 +5,7 @@ import { MySchedule } from "./Comps";
 import classnames from 'classnames';
 import { Spin } from 'antd';
 import { List } from 'antd-mobile';
+import WechatTools from '../common/WechatTools';
 
 const Item = List.Item;
 export default class Home extends React.Component {
@@ -23,6 +24,7 @@ export default class Home extends React.Component {
         this.loadProfile();
         this.loadStatistics();
         this.loadSchedule();
+        this.syncLocation();
     }
     loadProfile = () => {
         App.api('recy/recycler/profile').then((profile) => {
@@ -36,9 +38,16 @@ export default class Home extends React.Component {
         });
     }
 
+    syncLocation = () => {
+        WechatTools.getLocation().then(res => {
+            console.log(res);
+            let { latitude, longitude } = res;
+            App.api('recy/recycler/sync_location', { lat: latitude, lng: longitude });
+        });
+    };
+
     loadSchedule = () => {
         App.api('recy/trade/schedule').then((schedules) => {
-
             this.setState({ schedules, scheduleLoaded: true });
         });
     };
@@ -48,9 +57,10 @@ export default class Home extends React.Component {
         if (!profile.id) {
             return <Spin />
         }
-        let { name, avatar, recyclerNumber } = profile;
+        let { name, verify = {}, jobNumber } = profile;
+        let { jobProve = require('../assets/image/common/icon_author_default.png') } = verify;
         let { comoletedCount = 0, todayCount = 0, visitCount = 0, waitCount = 0 } = statistics;
-        let defaultAvatar = require('../assets/image/common/icon_author_default.png');
+
         return <div className='home-page'>
             <div className="top">
                 <div className="bg-circle"></div>
@@ -68,12 +78,12 @@ export default class Home extends React.Component {
                 </ul>
             </div>
             <div className="avatar">
-                <img src={avatar || defaultAvatar} />
+                <img src={jobProve} />
             </div>
             <div className="message"></div>
             <div className="trade-center">
                 <List >
-                    <Item arrow="horizontal" onClick={() => App.go('/trades')}>
+                    <Item arrow="horizontal" onClick={() => App.go('/grab')}>
                         <i className="icon-trade" />
                         订单中心
                     </Item>
@@ -81,11 +91,11 @@ export default class Home extends React.Component {
                 <ul className="center-num">
                     <li>
                         <div className="number">{waitCount}</div>
-                        <div className="mean">待接单</div>
+                        <div className="mean" onClick={() => App.go('/trades')}>待接单</div>
                     </li>
                     <li>
                         <div className="number">{visitCount}</div>
-                        <div className="mean">待上门</div>
+                        <div className="mean" onClick={() => App.go('/trades')}>待上门</div>
                     </li>
                 </ul>
             </div>

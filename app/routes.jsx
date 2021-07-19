@@ -10,6 +10,9 @@ import Signin from './component/signin/Signin';
 import Trades from './component/trade/Trades';
 import Trade from './component/trade/Trade';
 import Collate from './component/trade/Collate';
+import TradeNavigate from './component/trade/TradeNavigate';
+
+import Message from './component/message/Message';
 
 const routes = (
     <HashRouter>
@@ -26,6 +29,10 @@ const routes = (
             <Route path='/trade/:tradeId' component={Trade} />
 
             <Route path='/collate/:tradeId' component={Collate} />
+
+            <Route path='/navigate/:tradeId' component={TradeNavigate} />
+
+            <Route path='/message' component={Message} />
 
             <Route path='/' children={() => (
                 <HomeWrap>

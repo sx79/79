@@ -86,13 +86,14 @@ export default class CartEdit extends React.Component {
             let { amount } = item;
             return total + amount
         }, 0);
-        console.log(trade);
+
         App.api('recy/trade/collate_trade', { trade: JSON.stringify(trade) }).then(() => {
             this.setState({ isNoRepeat: true });
             Toast.success("物品添加成功");
             this.close();
             this.props.loadTrade();
         })
+
     }
 
     render() {

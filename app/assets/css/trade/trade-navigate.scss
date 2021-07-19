@@ -1,0 +1,68 @@
+@import "../color";
+@import "../variables";
+@import "../mixin";
+
+.trade-navigate-page {
+    position: relative;
+
+    .map-container {
+        width: 100vw;
+        height: 100vh;
+    }
+
+    .progress-step {
+        z-index: 1;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 24px;
+        width: 92vw;
+        border-radius: 6px;
+        overflow: hidden;
+        padding: 0;
+
+        .title-user {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 50px;
+            padding: 0 4vw;
+            background: #f8f8f8;
+
+            .user {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .distance {
+                flex: 0 0 100px;
+                display: flex;
+                justify-content: flex-end;
+            }
+
+        }
+
+        .step {
+            margin: 10px 0;
+            padding: 0 4vw;
+        }
+
+        .btn-wrap {
+            margin: 40px 0 20px 0;
+            padding: 0 4vw;
+            width: 100%;
+
+            .btn {
+                margin: 0 auto;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 20px;
+                color: #fff;
+                background: $primary-color;
+            }
+        }
+    }
+}

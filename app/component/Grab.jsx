@@ -218,7 +218,7 @@ export default class Grab extends React.Component {
                                 </li>
                             </ul>
                             <div className="footer">
-                                <div className="navigation"><i />导航</div>
+                                <div className="navigation" onClick={() => App.go(`/navigate/${tradeId}`)}><i />导航</div>
                                 <div className={classnames('grab', { 'not-grap': isNotGrap || diff < 0 })} onClick={() => {
                                     if (isNotGrap || status != 1) {
                                         return;

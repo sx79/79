@@ -56,7 +56,6 @@ export default class Trades extends React.Component {
         App.api("/recy/trade/trades", {
             ...this.getQuery(pagination),
         }).then((result) => {
-            console.log(result);
             let { page = {}, trades = [] } = result;
             this.setState({
                 trades: result.trades,
@@ -148,10 +147,6 @@ export default class Trades extends React.Component {
 
         let length = trades.length;
 
-        if (length <= 0) {
-            return <Spin />
-        }
-
         let _trades = trades.sort((a, b) => {
             return parseInt(a.visitedStartAt) - parseInt(b.visitedStartAt);
         });
@@ -159,8 +154,6 @@ export default class Trades extends React.Component {
         _trades.sort((a, b) => {
             return a.distance - b.distance;
         });
-
-
 
         return <div className="trades-page">
             <ul className="tabs">

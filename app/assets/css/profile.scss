@@ -52,6 +52,13 @@
                             right: 5px;
                         }
 
+                        // .anticon {
+                        //     margin-right: 2.6vw;
+                        //     display: block;
+                        //     width: 16px;
+                        //     height: 16px;
+                        // }
+
                         i {
                             margin-right: 2.6vw;
                             display: block;
@@ -61,6 +68,11 @@
 
                         .work {
                             background: url('../image/profile/icon_work.png') center no-repeat;
+                            background-size: contain;
+                        }
+
+                        .msg {
+                            background: url('../image/profile/icon_msg.png') center no-repeat;
                             background-size: contain;
                         }
 
@@ -77,6 +89,9 @@
                     }
 
                     .am-list-extra {
+                        display: flex;
+                        align-items: center;
+                        justify-content: flex-end;
                         font-size: 16px;
                         font-weight: 500;
                         color: #333333;

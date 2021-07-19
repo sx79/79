@@ -7,6 +7,7 @@ import { DoubleLeftOutlined, DoubleRightOutlined } from '@ant-design/icons';
 import classnames from 'classnames';
 import { List, Radio, Toast, SwipeAction, Modal, } from 'antd-mobile';
 import TradeUtils from './trade/TradeUtils';
+import WechatTools from '../common/WechatTools';
 
 const { Step } = Steps;
 const RadioItem = Radio.RadioItem;
@@ -146,6 +147,14 @@ class Carts extends React.Component {
 
 class ProgressStep extends React.Component {
 
+    // componentDidMount() {
+    //     this.props.onTradeLoaded();
+    // }
+
+    // componentWillUnmount() {
+    //     Toast.hide();
+    // }
+
     render() {
         let { trade = {} } = this.props;
 
@@ -183,6 +192,10 @@ class ProgressStep extends React.Component {
                         icon={<i className="icon time" />}
                         title={period} />
                 </Steps>
+                <div className="map">
+                    <div className="map-inner" id="map_container"></div>
+                    <div className="btn" onClick={() => WechatTools.openLocation(address)}>地图导航</div>
+                </div>
             </div>
         </div>
     }
@@ -509,7 +522,6 @@ class MySchedule extends React.Component {
             let week = '日一二三四五六'.charAt(now.getDay());
             let dayStr = U.date.format(now, 'yyyy-MM-dd');
             let sitem = (schedules.find(item => item[1] === dayStr) || {});
-            console.log(sitem);
             dayArr.push({
                 day: now,
                 dayStr,
