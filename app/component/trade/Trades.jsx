@@ -154,6 +154,9 @@ export default class Trades extends React.Component {
         _trades.sort((a, b) => {
             return a.distance - b.distance;
         });
+        _trades.sort((a, b) => {
+            return b.createdAt - a.createdAt;
+        });
 
         return <div className="trades-page">
             <ul className="tabs">

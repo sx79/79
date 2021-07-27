@@ -60,12 +60,12 @@ export default class Profile extends React.Component {
                     <i className="trade" />
                     我的订单
                 </Item>
-                <Item onClick={() => App.go('/message')}
+                {/* <Item onClick={() => App.go('/message')}
                     extra={<Badge text={22} overflowCount={99} />}
                     arrow="horizontal">
                     <i className="msg" />
                     我的消息
-                </Item>
+                </Item> */}
                 <Item
                     extra={U.str.formatMobile(mobile)}
                     arrow="horizontal">
@@ -80,4 +80,5 @@ export default class Profile extends React.Component {
             </div>
         </div>;
     }
+
 }

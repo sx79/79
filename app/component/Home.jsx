@@ -91,7 +91,7 @@ export default class Home extends React.Component {
                 <ul className="center-num">
                     <li>
                         <div className="number">{waitCount}</div>
-                        <div className="mean" onClick={() => App.go('/trades')}>待接单</div>
+                        <div className="mean" onClick={() => App.go('/grab')}>待接单</div>
                     </li>
                     <li>
                         <div className="number">{visitCount}</div>
