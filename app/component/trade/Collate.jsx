@@ -34,7 +34,7 @@ export default class Collate extends React.Component {
     }
 
     loadCategories = () => {
-        App.api('recy/category/categories').then(categories => {
+        App.api('recy/category/categories', { type: 1 }).then(categories => {
             this.setState({ categories });
         });
     }
